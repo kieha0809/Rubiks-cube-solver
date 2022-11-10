@@ -14,26 +14,24 @@ def hsv_to_colour(hsv):  # Function for converting HSV values to colour
 
 
 def detect_square(img_location):
-    img = cv.imread(img_location)
-    gray_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    ret, thresh = cv.threshold(gray_img, 200, 255, 0)
-    cv.imshow('dfgf',thresh)
-    contours, hierarchy = cv.findContours(thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+    img = cv.imread(img_location) #Reads in an image of the cube face
+    gray_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY) #Converts the image to grayscale
 
-    print(contours, hierarchy)
+    blurred_frame = cv.blur(gray_img, (3, 3)) #Performs morphological operations: blurring,kernelling and dilation
+    canny_frame = cv.Canny(blurred_frame, 30, 60, 3)
+    kernel = cv.getStructuringElement(cv.MORPH_RECT, (9, 9))
+    dilated_frame = cv.dilate(canny_frame, kernel)
 
-    cv.drawContours(img, contours, -1, (0, 255, 0), 3)
-
-    '''min_area = 1000
-    max_area = 2000
-    for contour in contours:
-        area = cv.contourArea(contour)'''
+    ret, thresh = cv.threshold(dilated_frame, 200, 255, 0) #Thresholds the image
+    cv.imshow('thresh', thresh)
+    contours, hierarchy = cv.findContours(thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE) #Finds contours
+    cv.drawContours(img, contours, -1, (0, 255, 0), 3) #Draws on the contours
 
     cv.imshow('img', img)
     cv.waitKey(0)
 
 
-detect_square('cube2.jpg')
+detect_square('cube.jpg')
 '''img = cv.imread('cube.jpg')
 cv.imshow('img',img)
 cv.waitKey(0)'''
