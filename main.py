@@ -1,5 +1,6 @@
 import cv2 as cv
-import numpy
+import numpy as np
+
 
 def hsv_to_colour(hsv):  # Function for converting HSV values to colour
     colours = {  # HSV colour ranges
@@ -14,19 +15,25 @@ def hsv_to_colour(hsv):  # Function for converting HSV values to colour
 
 def detect_square(img_location):
     img = cv.imread(img_location)
-    gray_img = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
-    contours,hierarchy = cv.findContours(gray_img, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
-    min_area = 1000
+    gray_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    ret, thresh = cv.threshold(gray_img, 200, 255, 0)
+    cv.imshow('dfgf',thresh)
+    contours, hierarchy = cv.findContours(thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+
+    print(contours, hierarchy)
+
+    cv.drawContours(img, contours, -1, (0, 255, 0), 3)
+
+    '''min_area = 1000
     max_area = 2000
-    for i, contour in enumerate(contours):
-        area = cv.contourArea(contour)
-        if min_area < area  <max_area:
-            cv.drawContours(img, contours,i , (0, 255, 0), 3)
-    cv.imshow('img',img)
+    for contour in contours:
+        area = cv.contourArea(contour)'''
+
+    cv.imshow('img', img)
     cv.waitKey(0)
 
 
-detect_square('cube.jpg')
+detect_square('cube2.jpg')
 '''img = cv.imread('cube.jpg')
 cv.imshow('img',img)
 cv.waitKey(0)'''
