@@ -39,10 +39,32 @@ def detect_square(img_location):
 
     cv.imshow('img', img)
     cv.waitKey(0)
-    return x,y,w,h
+    return x, y, w, h
 
 
-detect_square('cube4.jpg')
+def get_square_coordinates(x, y, w, h):
+    coordinates = [] #Coordinates of the centres of each square
+    increment = w / 3 # The increment that is added to the x coordinate to get between squares at the same height
+    for i in range(3): #Loops through all squares on the top row and gets their coordinates
+        x_cor = x + x / 6 + i * increment
+        y_cor = y + y / 6
+        coordinates.append((x_cor, y_cor))
+    for i in range(3): #Repeats the above procedure for the second row
+        x_cor = x + x / 6 + i * increment
+        y_cor = y + y / 2
+        coordinates.append((x_cor, y_cor))
+    for i in range(3): #Repeats for the third row
+        x_cor = x + x / 6 + i * increment
+        y_cor = y + 5 * y / 6
+        coordinates.append((x_cor, y_cor))
+
+    return coordinates
+
+
+#detect_square('cube.jpg')
 '''img = cv.imread('cube.jpg')
 cv.imshow('img',img)
 cv.waitKey(0)'''
+
+a=get_square_coordinates(10,10,2,2)
+print(a)
