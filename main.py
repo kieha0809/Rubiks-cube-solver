@@ -17,7 +17,6 @@ def hsv_to_colourTRIAL(hsv):  # Function for converting HSV values to colour
 
 def morphological_operations(frame):
     gray_img = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)  # Converts the image to grayscale
-
     blurred_frame = cv.GaussianBlur(gray_img, (3, 3), 0)  # Blurs the image
     canny_frame = cv.Canny(blurred_frame, 20, 40, 3)  # Canny edge detection
     kernel = cv.getStructuringElement(cv.MORPH_RECT, (7, 7))
@@ -25,11 +24,10 @@ def morphological_operations(frame):
     return dilated_frame
 
 
-def detect_square(dilated_frame):
-    # img = cv.imread(frame)  # Reads in an image of the cube face
+def detect_square(dilated_frame): # Takes in dilated frame as parameter
     thresh = cv.adaptiveThreshold(dilated_frame, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY_INV, 21,
                                   4)  # Thresholds the image
-    cv.imshow('thresh', thresh)
+    cv.imshow('thresh', thresh)  # Shows the result of thresholding
     contours, hierarchy = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)  # Finds contours
     min_area = 1000  # Defines the minimum area for a contour to be valid
     max_area = 2000  # Maximum area for which the contour is valid
@@ -42,14 +40,8 @@ def detect_square(dilated_frame):
             aspect_ratio = w / h  # Aspect ratio for a square should be one
             if 0.9 < aspect_ratio < 1.1:  # Checks if aspect ratio is close enough to 1 to be classified as a square
                 cv.rectangle(frame, (x, y), (x + w, y + h), (36, 255, 12), 2)  # Draws the square onto the image
-                # squares.append([x+w,y+h]) #Appends coordinates of centre of square to array
-
-    # cv.drawContours(img, contours, -1, (0, 255, 0), 3)  # Draws on the contours
-    # print(squares)
-    # print(squares.sort())
     cv.imshow('img', frame)
     cv.waitKey(1)
-    # return x, y, w, h
 
 
 def get_square_coordinates(x, y, w, h):
