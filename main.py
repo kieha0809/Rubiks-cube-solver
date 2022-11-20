@@ -15,23 +15,24 @@ def hsv_to_colourTRIAL(hsv):  # Function for converting HSV values to colour
     }
 
 
-def detect_square(frame):
-    # img = cv.imread(frame)  # Reads in an image of the cube face
+def morphological_operations(frame):
     gray_img = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)  # Converts the image to grayscale
 
-    blurred_frame = cv.medianBlur(gray_img, 3)  # Performs morphological operations: blurring,kernelling and dilation
-    #sharpen_kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
-    #sharpen = cv.filter2D(blurred_frame, -1, sharpen_kernel)
-    canny_frame = cv.Canny(blurred_frame, 30, 60, 3)
+    blurred_frame = cv.GaussianBlur(gray_img, (3, 3), 0)  # Blurs the image
+    canny_frame = cv.Canny(blurred_frame, 20, 40, 3)  # Canny edge detection
     kernel = cv.getStructuringElement(cv.MORPH_RECT, (7, 7))
-    dilated_frame = cv.dilate(canny_frame, kernel)
-    close = cv.morphologyEx(dilated_frame, cv.MORPH_CLOSE, kernel, iterations = 2)
+    dilated_frame = cv.dilate(canny_frame, kernel)  # Dilates the image using the kernel defined above
+    return dilated_frame
 
-    thresh = cv.adaptiveThreshold(close, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY_INV,21,4)  # Thresholds the image
+
+def detect_square(dilated_frame):
+    # img = cv.imread(frame)  # Reads in an image of the cube face
+    thresh = cv.adaptiveThreshold(dilated_frame, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY_INV, 21,
+                                  4)  # Thresholds the image
     cv.imshow('thresh', thresh)
     contours, hierarchy = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)  # Finds contours
     min_area = 1000  # Defines the minimum area for a contour to be valid
-    max_area = 2000
+    max_area = 2000  # Maximum area for which the contour is valid
     for contour in contours:  # Loops through all contours detected
         approx = cv.approxPolyDP(contour, 0.1 * cv.arcLength(contour, True),
                                  True)  # Gets the number of sides in each contour
@@ -90,11 +91,12 @@ def hsv_to_colour(h, s, v):
 vid = cv.VideoCapture(0)
 while True:
     ret, frame = vid.read()
-    detect_square(frame)
+    face = morphological_operations(frame)
+    detect_square(face)
 
 # def get_hsv([x,y]):
 # rgb =
-detect_square('cube2.jpg')
+
 
 # a=get_square_coordinates(10,10,2,2)
 # print(a)
