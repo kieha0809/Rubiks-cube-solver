@@ -24,7 +24,8 @@ def morphological_operations(frame):
     return dilated_frame
 
 
-def detect_square(dilated_frame): # Takes in dilated frame as parameter
+def detect_square(dilated_frame):  # Takes in dilated frame as parameter
+    coordinates = [] #Coordintes of the squares
     thresh = cv.adaptiveThreshold(dilated_frame, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY_INV, 21,
                                   4)  # Thresholds the image
     cv.imshow('thresh', thresh)  # Shows the result of thresholding
@@ -40,8 +41,10 @@ def detect_square(dilated_frame): # Takes in dilated frame as parameter
             aspect_ratio = w / h  # Aspect ratio for a square should be one
             if 0.9 < aspect_ratio < 1.1:  # Checks if aspect ratio is close enough to 1 to be classified as a square
                 cv.rectangle(frame, (x, y), (x + w, y + h), (36, 255, 12), 2)  # Draws the square onto the image
+                coordinates.append((x, y, w, h))
     cv.imshow('img', frame)
     cv.waitKey(1)
+    return coordinates
 
 
 def get_square_coordinates(x, y, w, h):
@@ -80,11 +83,15 @@ def hsv_to_colour(h, s, v):
         return 'w'
 
 
-vid = cv.VideoCapture(0)
+vid = cv.VideoCapture(0)  # Captures video through webcam
 while True:
-    ret, frame = vid.read()
-    face = morphological_operations(frame)
-    detect_square(face)
+    ret, frame = vid.read()  # Gets frame from webcam feed
+    face = morphological_operations(frame)  # Applies morphological operations to frame
+    coordiates = detect_square(face)  # Gets the coordinates of the squares
+    if len(coordiates) == 9:  # When 9 squares are detected, the while loop is broken and the current frame is shown
+        cv.imshow('frame', frame)
+        cv.waitKey(0)
+        break
 
 # def get_hsv([x,y]):
 # rgb =
