@@ -25,7 +25,7 @@ def morphological_operations(frame):
 
 
 def detect_square(dilated_frame):  # Takes in dilated frame as parameter
-    coordinates = [] #Coordintes of the squares
+    coordinates = []  # Coordintes of the squares
     thresh = cv.adaptiveThreshold(dilated_frame, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY_INV, 21,
                                   4)  # Thresholds the image
     cv.imshow('thresh', thresh)  # Shows the result of thresholding
@@ -83,19 +83,40 @@ def hsv_to_colour(h, s, v):
         return 'w'
 
 
-vid = cv.VideoCapture(0)  # Captures video through webcam
+def bgr_to_colour(b, g, r):  # Function for converting bgr values to a colour
+    colours = {'r': [[0, 0, 230], [10, 10, 255]],
+               'o': [[0, 115, 230], [10, 141, 255]],
+               'g': [[68, 137, 0], [84, 168, 10]],
+               'b': [[137, 0, 0], [168, 10, 10]],
+               'w': [[245, 245, 245], [255, 255, 255]],
+               'y': [[0, 229, 229], [0, 255, 255]]}  # Defines the lower and upper bgr values for each colour
+
+    for colour in colours:  # Loops through the colours
+        if colours[colour][0][0] <= b <= colours[colour][1][0] and colours[colour][0][1] <= g <= colours[colour][1][
+            1] and colours[colour][0][2] <= r <= colours[colour][1][
+            2]:  # If each of the b,g and r values are within the prescribed range
+            return colour
+        else:
+            continue
+    return 'w'  # If not in the range of any colour, return 'w'
+
+
+'''vid = cv.VideoCapture(0)  # Captures video through webcam
 while True:
     ret, frame = vid.read()  # Gets frame from webcam feed
     face = morphological_operations(frame)  # Applies morphological operations to frame
     coordiates = detect_square(face)  # Gets the coordinates of the squares
     if len(coordiates) == 9:  # When 9 squares are detected, the while loop is broken and the current frame is shown
-        cv.imshow('frame', frame)
         cv.waitKey(0)
-        break
+        break'''
 
-# def get_hsv([x,y]):
-# rgb =
-
+img = cv.imread('orange.png')
+bgr = img[10, 10]
+b = bgr[0]
+g = bgr[1]
+r = bgr[2]
+colour = bgr_to_colour(b, g, r)
+print(colour)
 
 # a=get_square_coordinates(10,10,2,2)
 # print(a)
