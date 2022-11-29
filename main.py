@@ -1,5 +1,6 @@
 import cv2 as cv
 import numpy as np
+import math
 
 squares = []
 
@@ -84,21 +85,29 @@ def hsv_to_colour(h, s, v):
 
 
 def bgr_to_colour(b, g, r):  # Function for converting bgr values to a colour
-    colours = {'r': [[0, 0, 230], [10, 10, 255]],
-               'o': [[0, 115, 230], [10, 141, 255]],
-               'g': [[68, 137, 0], [84, 168, 10]],
-               'b': [[137, 0, 0], [168, 10, 10]],
-               'w': [[245, 245, 245], [255, 255, 255]],
-               'y': [[0, 229, 229], [0, 255, 255]]}  # Defines the lower and upper bgr values for each colour
-
+    colours = {'r': [0, 0, 255],
+               'o': [0, 128, 255],
+               'g': [0, 255, 0],
+               'b': [255, 0, 0],
+               'w': [255, 255, 255],
+               'y': [0, 255, 255]}  # Defines bgr values for each colour
+    min_distance = 1000
+    colour_output = 'white'
     for colour in colours:  # Loops through the colours
-        if colours[colour][0][0] <= b <= colours[colour][1][0] and colours[colour][0][1] <= g <= colours[colour][1][
-            1] and colours[colour][0][2] <= r <= colours[colour][1][
-            2]:  # If each of the b,g and r values are within the prescribed range
-            return colour
-        else:
-            continue
-    return 'w'  # If not in the range of any colour, return 'w'
+        red_part = colours[colour][0]
+        green_part = colours[colour][1]
+        blue_part = colours[colour][2]
+        distance = (r - red_part)^2 + (g - green_part)^2 + (b - blue_part)^2
+        if distance < min_distance:
+            min_distance = distance
+            colour_output = colour
+    # if colours[colour][0][0] <= b <= colours[colour][1][0] and colours[colour][0][1] <= g <= colours[colour][1][
+    # 1] and colours[colour][0][2] <= r <= colours[colour][1][
+    # 2]:  # If each of the b,g and r values are within the prescribed range
+    # return colour
+    # else:
+    # continue
+    return colour_output
 
 
 '''vid = cv.VideoCapture(0)  # Captures video through webcam
@@ -110,12 +119,13 @@ while True:
         cv.waitKey(0)
         break'''
 
-img = cv.imread('orange.png')
+img = cv.imread('blue.png')
 bgr = img[10, 10]
 b = bgr[0]
 g = bgr[1]
 r = bgr[2]
 colour = bgr_to_colour(b, g, r)
+print(b,g,r)
 print(colour)
 
 # a=get_square_coordinates(10,10,2,2)
