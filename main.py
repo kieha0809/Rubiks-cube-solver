@@ -39,11 +39,11 @@ def detect_square(dilated_frame):  # Takes in dilated frame as parameter
 
 def bgr_to_colour(bgr):  # Function for converting an array of bgr values to a colour
     colours = {'r': [0, 0, 200],
-               'o': [0, 120, 200],
+               'o': [0, 125, 200],
                'g': [0, 150, 0],
                'b': [160, 0, 0],
                'w': [255, 255, 255],
-               'y': [0, 220, 220]}  # Defines bgr values for each colour
+               'y': [70, 200, 200]}  # Defines bgr values for each colour
     min_distance = 1000  # Variable for the smallest distance between colours
     colour_output = 'w'  # Variable which stores the colour it is determined to be
     for colour in colours:  # Loops through the colours
@@ -73,7 +73,7 @@ while True:
             square_midpoint_y = int(y + h / 2)
             bgr = frame[square_midpoint_y, square_midpoint_x]
             colour = bgr_to_colour(bgr)
-            print(colour)
+            print(coordinate,colour)
         cv.waitKey(0)
         break
 
