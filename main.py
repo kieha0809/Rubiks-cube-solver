@@ -5,17 +5,6 @@ import math
 squares = []
 
 
-def hsv_to_colourTRIAL(hsv):  # Function for converting HSV values to colour
-    colours = {  # HSV colour ranges
-        'white': ([0, 0, 179], [179, 16, 255]),
-        'yellow': ([15, 51, 0], [27, 183, 215]),
-        'blue': ([79, 135, 104], [112, 255, 255]),
-        'green': ([24, 53, 93], [158, 255, 255]),
-        'red': ([0, 119, 135], [179, 255, 181]),
-        'orange': ([0, 118, 157], [179, 255, 255]),
-    }
-
-
 def morphological_operations(frame):
     gray_img = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)  # Converts the image to grayscale
     blurred_frame = cv.GaussianBlur(gray_img, (3, 3), 0)  # Blurs the image
@@ -26,10 +15,10 @@ def morphological_operations(frame):
 
 
 def detect_square(dilated_frame):  # Takes in dilated frame as parameter
-    coordinates = []  # Coordintes of the squares
+    coordinates = []  # Coordinates of the squares
     thresh = cv.adaptiveThreshold(dilated_frame, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY_INV, 21,
                                   4)  # Thresholds the image
-    cv.imshow('thresh', thresh)  # Shows the result of thresholding
+    # cv.imshow('thresh', thresh)  # Shows the result of thresholding
     contours, hierarchy = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)  # Finds contours
     min_area = 1000  # Defines the minimum area for a contour to be valid
     max_area = 2000  # Maximum area for which the contour is valid
@@ -48,81 +37,48 @@ def detect_square(dilated_frame):  # Takes in dilated frame as parameter
     return coordinates
 
 
-def get_square_coordinates(x, y, w, h):
-    coordinates = []  # Coordinates of the centres of each square
-    increment = w / 3  # The increment that is added to the x coordinate to get between squares at the same height
-    for i in range(3):  # Loops through all squares on the top row and gets their coordinates
-        x_cor = x + x / 6 + i * increment
-        y_cor = y + y / 6
-        coordinates.append((x_cor, y_cor))
-    for i in range(3):  # Repeats the above procedure for the second row
-        x_cor = x + x / 6 + i * increment
-        y_cor = y + y / 2
-        coordinates.append((x_cor, y_cor))
-    for i in range(3):  # Repeats for the third row
-        x_cor = x + x / 6 + i * increment
-        y_cor = y + 5 * y / 6
-        coordinates.append((x_cor, y_cor))
-
-    return coordinates
-
-
-def hsv_to_colour(h, s, v):
-    if h < 5 and s > 5:
-        return 'r'
-    elif h < 10 and h >= 3:
-        return 'o'
-    elif h <= 25 and h > 10:
-        return 'y'
-    elif h >= 70 and h <= 85 and s > 100 and v < 180:
-        return 'g'
-    elif h <= 130 and s > 70:
-        return 'b'
-    elif h <= 100 and s < 10 and v < 200:
-        return 'w'
-    else:
-        return 'w'
-
-
-def bgr_to_colour(b, g, r):  # Function for converting bgr values to a colour
-    colours = {'r': [0, 0, 255],
-               'o': [0, 128, 255],
-               'g': [13, 181, 13],
-               'b': [169, 12, 12],
+def bgr_to_colour(bgr):  # Function for converting an array of bgr values to a colour
+    colours = {'r': [0, 0, 200],
+               'o': [0, 120, 200],
+               'g': [0, 150, 0],
+               'b': [160, 0, 0],
                'w': [255, 255, 255],
-               'y': [0, 255, 255]}  # Defines bgr values for each colour
+               'y': [0, 220, 220]}  # Defines bgr values for each colour
     min_distance = 1000  # Variable for the smallest distance between colours
-    colour_output = 'white'  # Variable which stores the colour it is determined to be
+    colour_output = 'w'  # Variable which stores the colour it is determined to be
     for colour in colours:  # Loops through the colours
         blue_part = colours[colour][0]  # Gets the red part from BGR values for each colour
         green_part = colours[colour][1]  # Same as above for green part
         red_part = colours[colour][2]  # Same as above for red part
-        distance = math.sqrt(
-            (r - red_part) ** 2 + (g - green_part) ** 2 + (b - blue_part) ** 2)  # Works out 'distance' between colours
+        distance = math.sqrt((bgr[0] - blue_part) ** 2 + (bgr[1] - green_part) ** 2 + (
+                    bgr[2] - red_part) ** 2)  # Works out 'distance' between colours
         if distance < min_distance:  # If distance calculated above is smaller than current minimum
             min_distance = distance  # Replace minimum distance with the distance calculated above
             colour_output = colour  # Replace the colour output with the colour we have been working with
-            print(b, g, r, colour, distance)  # To allow me to check distances calculated for each colour
     return colour_output  # Returns the first letter of the colour with the smallest distance
 
 
-'''vid = cv.VideoCapture(0)  # Captures video through webcam
+vid = cv.VideoCapture(0)  # Captures video through webcam
 while True:
     ret, frame = vid.read()  # Gets frame from webcam feed
     face = morphological_operations(frame)  # Applies morphological operations to frame
-    coordiates = detect_square(face)  # Gets the coordinates of the squares
-    if len(coordiates) == 9:  # When 9 squares are detected, the while loop is broken and the current frame is shown
+    coordinates = detect_square(face)  # Gets the coordinates of the squares
+    if len(coordinates) == 9:  # When 9 squares are detected, the while loop is broken and the current frame is shown
+        for coordinate in coordinates:
+            x = coordinate[0]
+            y = coordinate[1]
+            w = coordinate[2]
+            h = coordinate[3]
+            square_midpoint_x = int(x + w / 2)
+            square_midpoint_y = int(y + h / 2)
+            bgr = frame[square_midpoint_y, square_midpoint_x]
+            colour = bgr_to_colour(bgr)
+            print(colour)
         cv.waitKey(0)
-        break'''
+        break
 
-img = cv.imread('green.png')
-bgr = img[10, 10]
-b = bgr[0]
-g = bgr[1]
-r = bgr[2]
-colour = bgr_to_colour(b, g, r)
-print(b, g, r)
-print(colour)
-
-# a=get_square_coordinates(10,10,2,2)
-# print(a)
+'''img = cv.imread('red.png')
+bgr = img[10,10]
+print(bgr)
+colour = bgr_to_colour(bgr)
+print(colour)'''
