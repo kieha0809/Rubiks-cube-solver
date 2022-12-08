@@ -2,8 +2,6 @@ import cv2 as cv
 import numpy as np
 import math
 
-squares = []
-
 
 def morphological_operations(frame):
     gray_img = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)  # Converts the image to grayscale
@@ -51,11 +49,22 @@ def bgr_to_colour(bgr):  # Function for converting an array of bgr values to a c
         green_part = colours[colour][1]  # Same as above for green part
         red_part = colours[colour][2]  # Same as above for red part
         distance = math.sqrt((bgr[0] - blue_part) ** 2 + (bgr[1] - green_part) ** 2 + (
-                    bgr[2] - red_part) ** 2)  # Works out 'distance' between colours
+                bgr[2] - red_part) ** 2)  # Works out 'distance' between colours
         if distance < min_distance:  # If distance calculated above is smaller than current minimum
             min_distance = distance  # Replace minimum distance with the distance calculated above
             colour_output = colour  # Replace the colour output with the colour we have been working with
     return colour_output  # Returns the first letter of the colour with the smallest distance
+
+
+def sort_coordinates(coordinates):  # Function for arranging coordinates from left to right, row by row
+    sorted_coordinates = sorted(coordinates, key=lambda k: [k[1], k[0]])  # Sorts coordinates based on y coordinates
+    sorted_coordinates[0:3] = sorted(sorted_coordinates[0:3],
+                                     key=lambda k: [k[0]])  # Sorts the first three coordinates by x coordinate
+    sorted_coordinates[3:6] = sorted(sorted_coordinates[3:6],
+                                     key=lambda k: [k[0]])  # Sorts the next three coordinates by x coordinate
+    sorted_coordinates[6:9] = sorted(sorted_coordinates[6:9],
+                                     key=lambda k: [k[0]])  # Sorts the final three coordinates by x coordinate
+    return sorted_coordinates
 
 
 vid = cv.VideoCapture(0)  # Captures video through webcam
@@ -64,18 +73,19 @@ while True:
     face = morphological_operations(frame)  # Applies morphological operations to frame
     coordinates = detect_square(face)  # Gets the coordinates of the squares
     if len(coordinates) == 9:  # When 9 squares are detected, the while loop is broken and the current frame is shown
-        for coordinate in coordinates:
-            x = coordinate[0]
-            y = coordinate[1]
-            w = coordinate[2]
-            h = coordinate[3]
-            square_midpoint_x = int(x + w / 2)
-            square_midpoint_y = int(y + h / 2)
-            bgr = frame[square_midpoint_y, square_midpoint_x]
-            colour = bgr_to_colour(bgr)
-            print(coordinate,colour)
-        cv.waitKey(0)
-        break
+        ordered_coordinates = sort_coordinates(coordinates)
+        for coordinate in ordered_coordinates:  # Loops through the coordinates
+            x = coordinate[0]  # Gets the x coordinate of the top left corner of the square
+            y = coordinate[1]  # Gets the y coordinate of the top left corner of the square
+            w = coordinate[2]  # Gets the width of the square
+            h = coordinate[3]  # Gets the height of the square
+            square_midpoint_x = int(x + w / 2)  # Calculates x coordinate of the midpoint of the square
+            square_midpoint_y = int(y + h / 2)  # Calculates y coordinate of the midpoint of the square
+            bgr = frame[square_midpoint_y, square_midpoint_x]  # Gets BGR value of pixel at midpoint of square
+            colour = bgr_to_colour(bgr)  # Converts BGR value of pixel to a colour
+            print(colour)  # Outputs the colour
+        cv.waitKey(0)  # Keeps the current frame open
+        break  # Breaking the while loop
 
 '''img = cv.imread('red.png')
 bgr = img[10,10]
