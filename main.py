@@ -1,6 +1,21 @@
 import cv2 as cv
 import numpy as np
 import math
+import keyboard
+
+
+class Cube:  # Class for the representation of the cube
+    def __init__(self):
+        self.colours = None  # Creates attribute for colours
+
+    def add_face(self, colours):  # Method for adding the colours of a face
+        self.colours += colours
+
+    def remove_current_face(self):  # Method for removing the most recently added face from colours
+        self.colours = self.colours[:-6]  #
+
+    def reset_cube(self):
+        self.colours = None
 
 
 def morphological_operations(frame):
@@ -36,12 +51,12 @@ def detect_square(dilated_frame):  # Takes in dilated frame as parameter
 
 
 def bgr_to_colour(bgr):  # Function for converting an array of bgr values to a colour
-    colours = {'r': [0, 0, 200],
-               'o': [0, 125, 200],
+    colours = {'r': [30, 10, 200],
+               'o': [50, 80, 170],
                'g': [0, 150, 0],
                'b': [160, 0, 0],
-               'w': [255, 255, 255],
-               'y': [70, 200, 200]}  # Defines bgr values for each colour
+               'w': [200, 200, 200],
+               'y': [80, 170, 180]}  # Defines bgr values for each colour
     min_distance = 1000  # Variable for the smallest distance between colours
     colour_output = 'w'  # Variable which stores the colour it is determined to be
     for colour in colours:  # Loops through the colours
