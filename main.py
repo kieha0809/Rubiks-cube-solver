@@ -1,21 +1,26 @@
 import cv2 as cv
-import numpy as np
+# import numpy as np
 import math
 import keyboard
 
 
 class Cube:  # Class for the representation of the cube
     def __init__(self):
-        self.colours = None  # Creates attribute for colours
+        self.colours = ''  # Creates attribute for colours
 
     def add_face(self, colours):  # Method for adding the colours of a face
         self.colours += colours
 
     def remove_current_face(self):  # Method for removing the most recently added face from colours
-        self.colours = self.colours[:-6]  #
+        self.colours = self.colours[:-6]
 
-    def reset_cube(self):
-        self.colours = None
+    def get_number_of_colours(self):  # Method for returning the number of colours added to the cube
+        return len(self.colours)
+
+    def get_colours(self):  # Method for outputting the colours added
+        return self.colours
+    def reset_cube(self):  # Method for removing the all the colours from the 'colours' attribute
+        self.colours = ''
 
 
 def morphological_operations(frame):
@@ -82,9 +87,9 @@ def sort_coordinates(coordinates):  # Function for arranging coordinates from le
     return sorted_coordinates
 
 
-vid = cv.VideoCapture(0)  # Captures video through webcam
-while True:
-    ret, frame = vid.read()  # Gets frame from webcam feed
+def detect_colours():
+    found_all_squares = False  # Variable for checking if colour detection is correct
+    face_colours = ''  # String of colours in one face
     face = morphological_operations(frame)  # Applies morphological operations to frame
     coordinates = detect_square(face)  # Gets the coordinates of the squares
     if len(coordinates) == 9:  # When 9 squares are detected, the while loop is broken and the current frame is shown
@@ -98,9 +103,25 @@ while True:
             square_midpoint_y = int(y + h / 2)  # Calculates y coordinate of the midpoint of the square
             bgr = frame[square_midpoint_y, square_midpoint_x]  # Gets BGR value of pixel at midpoint of square
             colour = bgr_to_colour(bgr)  # Converts BGR value of pixel to a colour
-            print(colour)  # Outputs the colour
+            face_colours += colour  # Adds colour detected to the end of the string
+        print(
+            f'Are these colours correct: {face_colours}? Press space if yes, press any other key if no')  # Asks the user to check if the colours detected are correct
         cv.waitKey(0)  # Keeps the current frame open
-        break  # Breaking the while loop
+        if keyboard.is_pressed('space'):  # If the user presses the space bar
+            found_all_squares = True  # Colour detection is correct
+    return (found_all_squares,
+            face_colours)  # Returns a tuple with the success of the colour detection and the string of nine colours
+
+
+cube = Cube()  # Creates an instance of the cube class
+vid = cv.VideoCapture(0)  # Captures video through webcam
+while cube.get_number_of_colours() != 54:  # Loop continues until all of the colours are detected
+    ret, frame = vid.read()  # Gets frame from webcam feed
+    colours_found = detect_colours()  # Sets the tuple output of detect_colours to a variable
+    if colours_found[0] == True:  # If the nine colours were found successfully
+        cube.add_face(colours_found[1])  # Add the colours to attribute in the cube class
+all_colours = cube.get_colours()  # Assigns the string of all the cube colours to a variable
+print(f"The cube colours are: {all_colours}")  # Prints all the cube colours
 
 '''img = cv.imread('red.png')
 bgr = img[10,10]
