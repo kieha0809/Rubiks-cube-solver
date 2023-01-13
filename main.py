@@ -64,6 +64,7 @@ def bgr_to_colour(bgr):  # Function for converting an array of bgr values to a c
                'y': [80, 170, 180]}  # Defines bgr values for each colour
     min_distance = 1000  # Variable for the smallest distance between colours
     colour_output = 'w'  # Variable which stores the colour it is determined to be
+
     for colour in colours:  # Loops through the colours
         blue_part = colours[colour][0]  # Gets the red part from BGR values for each colour
         green_part = colours[colour][1]  # Same as above for green part
