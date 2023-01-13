@@ -107,8 +107,8 @@ def detect_colours():
         print(
             f'Are these colours correct: {face_colours}? Press space if yes, press any other key if no')  # Asks the user to check if the colours detected are correct
         cv.waitKey(0)  # Keeps the current frame open
-        if keyboard.is_pressed('space'):  # If the user presses the space bar
-            found_all_squares = True  # Colour detection is correct
+    if keyboard.is_pressed('space'):  # If the user presses the space bar
+        found_all_squares = True  # Colour detection is correct
     return (found_all_squares,
             face_colours)  # Returns a tuple with the success of the colour detection and the string of nine colours
 
@@ -122,9 +122,3 @@ while cube.get_number_of_colours() != 54:  # Loop continues until all of the col
         cube.add_face(colours_found[1])  # Add the colours to attribute in the cube class
 all_colours = cube.get_colours()  # Assigns the string of all the cube colours to a variable
 print(f"The cube colours are: {all_colours}")  # Prints all the cube colours
-
-'''img = cv.imread('red.png')
-bgr = img[10,10]
-print(bgr)
-colour = bgr_to_colour(bgr)
-print(colour)'''
