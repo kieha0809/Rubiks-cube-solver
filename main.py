@@ -1,7 +1,7 @@
-import cv2 as cv
-# import numpy as np
+import cv2 as cv  # Import the OpenCV library
 import math
-import keyboard
+import keyboard  # Imports library for keyboard operations
+from rubik_solver import utils  # Imports Rubik's cube solver
 
 
 class Cube:  # Class for the representation of the cube
@@ -19,8 +19,18 @@ class Cube:  # Class for the representation of the cube
 
     def get_colours(self):  # Method for outputting the colours added
         return self.colours
+
+    def solve_cube(self):
+        return utils.solve(self.colours, 'Kociemba')
+
     def reset_cube(self):  # Method for removing the all the colours from the 'colours' attribute
         self.colours = ''
+
+
+def get_webcam_frames():
+    vid = cv.VideoCapture(0)  # Captures video through webcam
+    ret, frame = vid.read()  # Gets frame from webcam feed
+    return frame
 
 
 def morphological_operations(frame):
@@ -32,11 +42,10 @@ def morphological_operations(frame):
     return dilated_frame
 
 
-def detect_square(dilated_frame):  # Takes in dilated frame as parameter
+def detect_square(frame, dilated_frame):  # Takes in dilated frame as parameter
     coordinates = []  # Coordinates of the squares
     thresh = cv.adaptiveThreshold(dilated_frame, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY_INV, 21,
                                   4)  # Thresholds the image
-    # cv.imshow('thresh', thresh)  # Shows the result of thresholding
     contours, hierarchy = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)  # Finds contours
     min_area = 1000  # Defines the minimum area for a contour to be valid
     max_area = 2000  # Maximum area for which the contour is valid
@@ -88,11 +97,11 @@ def sort_coordinates(coordinates):  # Function for arranging coordinates from le
     return sorted_coordinates
 
 
-def detect_colours():
+def detect_colours(frame):
     found_all_squares = False  # Variable for checking if colour detection is correct
     face_colours = ''  # String of colours in one face
     face = morphological_operations(frame)  # Applies morphological operations to frame
-    coordinates = detect_square(face)  # Gets the coordinates of the squares
+    coordinates = detect_square(frame, face)  # Gets the coordinates of the squares
     if len(coordinates) == 9:  # When 9 squares are detected, the while loop is broken and the current frame is shown
         ordered_coordinates = sort_coordinates(coordinates)
         for coordinate in ordered_coordinates:  # Loops through the coordinates
@@ -114,12 +123,14 @@ def detect_colours():
             face_colours)  # Returns a tuple with the success of the colour detection and the string of nine colours
 
 
-cube = Cube()  # Creates an instance of the cube class
-vid = cv.VideoCapture(0)  # Captures video through webcam
-while cube.get_number_of_colours() != 54:  # Loop continues until all of the colours are detected
-    ret, frame = vid.read()  # Gets frame from webcam feed
-    colours_found = detect_colours()  # Sets the tuple output of detect_colours to a variable
-    if colours_found[0] == True:  # If the nine colours were found successfully
-        cube.add_face(colours_found[1])  # Add the colours to attribute in the cube class
-all_colours = cube.get_colours()  # Assigns the string of all the cube colours to a variable
-print(f"The cube colours are: {all_colours}")  # Prints all the cube colours
+def main():
+    cube = Cube()  # Creates an instance of the cube class
+    while cube.get_number_of_colours() != 54:  # Loop continues until all of the colours are detected
+        frame = get_webcam_frames()
+        colours_found = detect_colours(frame)  # Sets the tuple output of detect_colours to a variable
+        if colours_found[0] == True:  # If the nine colours were found successfully
+            cube.add_face(colours_found[1])  # Add the colours to attribute in the cube class
+    cube.solve_cube()
+
+
+main()

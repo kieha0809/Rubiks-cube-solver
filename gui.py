@@ -1,9 +1,15 @@
 import tkinter as tk
+import PIL
+import main
 
 
 class MainWindow:
     def __init__(self, root):
-        self.webcam_frame = tk.Label(root, text='Webcam frame')
+        self.frame = main.get_webcam_frames()
+        self.webcam_frame = tk.Label(root)
+        self.img = PIL.Image.fromarray(main.frame)
+        self.webcam_frame.imgtk = self.img
+        self.webcam_frame.configure(image=self.img)
         self.webcam_frame.place(x=750,y=500)
 
         self.next_button = tk.Button(root, text='Next',font=30)
