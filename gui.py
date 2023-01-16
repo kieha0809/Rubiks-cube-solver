@@ -10,25 +10,25 @@ class MainWindow:
         self.img = PIL.Image.fromarray(main.frame)
         self.webcam_frame.imgtk = self.img
         self.webcam_frame.configure(image=self.img)
-        self.webcam_frame.place(x=750,y=500)
+        self.webcam_frame.place(x=750, y=500)
 
-        self.next_button = tk.Button(root, text='Next',font=30)
+        self.next_button = tk.Button(root, text='Next', font=30)
         self.next_button.pack()
 
-        self.back_button = tk.Button(root, text='Back',font=30)
+        self.back_button = tk.Button(root, text='Back', font=30)
         self.back_button.pack()
 
-        self.close_button = tk.Button(root, text='Close',font=30, command=root.destroy)
-        self.close_button.place(x=750,y=900,)
+        self.close_button = tk.Button(root, text='Close', font=30, command=root.destroy)
+        self.close_button.place(x=750, y=900, )
 
-        self.reset_button = tk.Button(root, text='Reset',font=30)
+        self.reset_button = tk.Button(root, text='Reset', font=30)
         self.reset_button.pack()
 
-        self.instructions_button = tk.Button(root, text='Instructions',font=30)
+        self.instructions_button = tk.Button(root, text='Instructions', font=30)
         self.instructions_button.pack()
 
-        self.command=tk.StringVar()
-        self.command_label = tk.Label(root,textvariable=self.command,font=30)
+        self.command = tk.StringVar()
+        self.command_label = tk.Label(root, textvariable=self.command, font=30)
         self.command_label.pack()
 
         self.canvas = tk.Canvas(root)
