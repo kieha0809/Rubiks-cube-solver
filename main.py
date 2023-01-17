@@ -8,6 +8,7 @@ import kociemba
 class Cube:  # Class for the representation of the cube
     def __init__(self):
         self.colours = ''  # Creates attribute for colours
+        self.positions = ''  # Creates attribute for the positions of the colours
 
     def add_face(self, colours):  # Method for adding the colours of a face
         self.colours += colours
@@ -16,13 +17,29 @@ class Cube:  # Class for the representation of the cube
         self.colours = self.colours[:-6]
 
     def get_number_of_colours(self):  # Method for returning the number of colours added to the cube
-        return len(self.colours)
+        return len(self.colours)  # Returns the length of the colours attribute string
 
     def get_colours(self):  # Method for outputting the colours added
         return self.colours
 
-    def solve_cube(self):
-        return kociemba.solve(self.colours)
+    def convert_colours_to_positions(self):  # Takes in a string of all colours and converts it to positons
+        for colour in self.colours:  # Loops through each letter in the string of colours
+            if colour == 'y':
+                self.positions += 'U'  # If the colour is yellow the position is U
+            elif colour == 'b':
+                self.positions += 'L'  # If the colour is blue the position is L
+            elif colour == 'r':
+                self.positions += 'F'  # If the colour is red the position is F
+            elif colour == 'g':
+                self.positions += 'R'  # If the colour is green the position is R
+            elif colour == 'o':
+                self.positions += 'B'  # If the colour is orange the position is B
+            else:
+                self.positions += 'D'  # If the colour is white the position is D
+        return self.positions
+
+    def solve_cube(self):  # Method for solving the cube
+        return kociemba.solve(self.positions)  # Uses the position attribute as argument in Kociemba function
 
     def reset_cube(self):  # Method for removing the all the colours from the 'colours' attribute
         self.colours = ''
@@ -54,9 +71,9 @@ def detect_square(dilated_frame):  # Takes in dilated frame as parameter
             aspect_ratio = w / h  # Aspect ratio for a square should be one
             if 0.9 < aspect_ratio < 1.1:  # Checks if aspect ratio is close enough to 1 to be classified as a square
                 cv.rectangle(frame, (x, y), (x + w, y + h), (36, 255, 12), 2)  # Draws the square onto the image
-                coordinates.append((x, y, w, h))
-    cv.imshow('img', frame)
-    cv.waitKey(1)
+                coordinates.append((x, y, w, h))  # Adds each (x,y,w,h) tuple to coordinates array
+    cv.imshow('img', frame)  # Shows the frame with the squares drawn on
+    cv.waitKey(1)  # Keeps the frame open
     return coordinates
 
 
@@ -125,6 +142,5 @@ while cube.get_number_of_colours() != 54:  # Loop continues until all of the col
     colours_found = detect_colours()  # Sets the tuple output of detect_colours to a variable
     if colours_found[0] == True:  # If the nine colours were found successfully
         cube.add_face(colours_found[1])  # Add the colours to attribute in the cube class
-all_colours = cube.get_colours()  # Assigns the string of all the cube colours to a variable
-solution = cube.solve_cube()
-print(solution)
+solution = cube.solve_cube()  # Gets the solution using the class methods
+print(solution)  # Displays solution
