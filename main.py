@@ -42,7 +42,8 @@ class Cube:  # Class for the representation of the cube
         return kociemba.solve(self.positions)  # Uses the position attribute as argument in Kociemba function
 
     def reset_cube(self):  # Method for removing the all the colours from the 'colours' attribute
-        self.colours = ''
+        self.colours = '' # Resets colour attribute to empty string
+        self.positions = ''  # Resets position attribute to empty string
 
 
 def morphological_operations(frame):
