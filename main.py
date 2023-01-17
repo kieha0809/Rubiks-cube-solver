@@ -22,27 +22,34 @@ class Cube:  # Class for the representation of the cube
     def get_colours(self):  # Method for outputting the colours added
         return self.colours
 
-    def convert_colours_to_positions(self):  # Takes in a string of all colours and converts it to positons
-        for colour in self.colours:  # Loops through each letter in the string of colours
-            if colour == 'y':
-                self.positions += 'U'  # If the colour is yellow the position is U
-            elif colour == 'b':
-                self.positions += 'L'  # If the colour is blue the position is L
-            elif colour == 'r':
-                self.positions += 'F'  # If the colour is red the position is F
-            elif colour == 'g':
-                self.positions += 'R'  # If the colour is green the position is R
-            elif colour == 'o':
-                self.positions += 'B'  # If the colour is orange the position is B
-            else:
-                self.positions += 'D'  # If the colour is white the position is D
+    def get_positions(self):  # Method for outputting the string of positions
         return self.positions
 
-    def solve_cube(self):  # Method for solving the cube
-        return kociemba.solve(self.positions)  # Uses the position attribute as argument in Kociemba function
+    def set_positions(self, positions):
+        self.positions = positions
+
+    def convert_colours_to_positions(self):  # Takes in a string of all colours and converts it to positions
+        positions = ''
+        for colour in self.colours:  # Loops through each letter in the string of colours
+            if colour == 'y':
+                positions += 'U'  # If the colour is yellow the position is U
+            elif colour == 'b':
+                positions += 'L'  # If the colour is blue the position is L
+            elif colour == 'r':
+                positions += 'F'  # If the colour is red the position is F
+            elif colour == 'g':
+                positions += 'R'  # If the colour is green the position is R
+            elif colour == 'o':
+                positions += 'B'  # If the colour is orange the position is B
+            else:
+                positions += 'D'  # If the colour is white the position is D
+        self.set_positions(positions)  # Uses setter to change position attribute
+
+    def solve_cube(self, cube_string):  # Takes in the string of positions as a parameter
+        return kociemba.solve(str(cube_string))  # Uses the position attribute as argument in Kociemba function
 
     def reset_cube(self):  # Method for removing the all the colours from the 'colours' attribute
-        self.colours = '' # Resets colour attribute to empty string
+        self.colours = ''  # Resets colour attribute to empty string
         self.positions = ''  # Resets position attribute to empty string
 
 
@@ -143,5 +150,8 @@ while cube.get_number_of_colours() != 54:  # Loop continues until all of the col
     colours_found = detect_colours()  # Sets the tuple output of detect_colours to a variable
     if colours_found[0] == True:  # If the nine colours were found successfully
         cube.add_face(colours_found[1])  # Add the colours to attribute in the cube class
-solution = cube.solve_cube()  # Gets the solution using the class methods
+print(cube.get_colours())  # For testing purposes
+print(cube.get_positions())  # For testing purposes
+position_string = cube.get_positions()  # Assigns string of positions to a variable
+solution = cube.solve_cube(position_string)  # Gets the solution using the class methods
 print(solution)  # Displays solution
