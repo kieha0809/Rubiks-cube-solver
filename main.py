@@ -28,7 +28,7 @@ class Cube:  # Class for the representation of the cube
     def set_positions(self, positions):
         self.positions = positions
 
-    def convert_colours_to_positions(self):  # Takes in a string of all colours and converts it to positions
+    def convert_colours_to_positions(self):  # Converts the string of colours to positions
         positions = ''
         for colour in self.colours:  # Loops through each letter in the string of colours
             if colour == 'y':
