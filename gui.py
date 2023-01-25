@@ -1,25 +1,21 @@
 import tkinter as tk
-import PIL
-import main
+import cv2 as cv
+import PIL.Image, PIL.ImageTk
+
+
+# import main
 
 
 class MainWindow:
     def __init__(self, root):
-        self.frame = main.get_webcam_frames()
-        self.webcam_frame = tk.Label(root)
-        self.img = PIL.Image.fromarray(main.frame)
-        self.webcam_frame.imgtk = self.img
-        self.webcam_frame.configure(image=self.img)
-        self.webcam_frame.place(x=750, y=500)
-
-        self.next_button = tk.Button(root, text='Next', font=30)
+        self.next_button = tk.Button(root, text='Next', font=30, command=self.show_webcam)
         self.next_button.pack()
 
         self.back_button = tk.Button(root, text='Back', font=30)
         self.back_button.pack()
 
         self.close_button = tk.Button(root, text='Close', font=30, command=root.destroy)
-        self.close_button.place(x=750, y=900, )
+        self.close_button.pack()
 
         self.reset_button = tk.Button(root, text='Reset', font=30)
         self.reset_button.pack()
@@ -44,6 +40,19 @@ class MainWindow:
         self.square8 = self.canvas.create_rectangle(100, 180, 180, 260)
         self.square9 = self.canvas.create_rectangle(180, 180, 260, 260)
 
+        self.webcam_frame = tk.Label(root)
+        self.webcam_frame.pack()
+
+    def show_webcam(self):
+        vid = cv.VideoCapture(0)
+        ret, frame = vid.read()
+        # rgb_frame =  cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+        captured_frame = PIL.Image.fromarray(frame)
+        photo_image = PIL.ImageTk.PhotoImage(image=captured_frame)
+        self.webcam_frame.photo = photo_image
+        self.webcam_frame.configure(image=photo_image)
+        self.webcam_frame.after(20, self.show_webcam)
+
 
 class InstructionsWindow:
     def __init__(self):
@@ -59,4 +68,5 @@ root = tk.Tk()  # Creates a window
 root.geometry('1500x1000')  # Sets the dimensions of the window
 root.title("Rubik's cube solver")  # Gives the window a title
 gui = MainWindow(root)
+# gui.show_webcam()
 root.mainloop()
