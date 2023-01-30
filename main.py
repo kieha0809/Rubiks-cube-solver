@@ -1,9 +1,9 @@
-rimport
-cv2 as cv
+import cv2 as cv
 # import numpy as np
 import math
 import keyboard
 import kociemba
+import gui
 
 
 class Cube:  # Class for the representation of the cube
@@ -81,7 +81,8 @@ def detect_square(dilated_frame):  # Takes in dilated frame as parameter
             if 0.9 < aspect_ratio < 1.1:  # Checks if aspect ratio is close enough to 1 to be classified as a square
                 cv.rectangle(frame, (x, y), (x + w, y + h), (36, 255, 12), 2)  # Draws the square onto the image
                 coordinates.append((x, y, w, h))  # Adds each (x,y,w,h) tuple to coordinates array
-    cv.imshow('img', frame)  # Shows the frame with the squares drawn on
+    #cv.imshow('img', frame)  # Shows the frame with the squares drawn on
+    gui.show_frame(gui.window,frame)
     cv.waitKey(1)  # Keeps the frame open
     return coordinates
 
@@ -151,10 +152,10 @@ while cube.get_number_of_colours() != 54:  # Loop continues until all of the col
     colours_found = detect_colours()  # Sets the tuple output of detect_colours to a variable
     if colours_found[0] == True:  # If the nine colours were found successfully
         cube.add_face(colours_found[1])  # Add the colours to attribute in the cube class
-print(cube.get_colours())  # For testing purposes
-print(cube.get_positions())  # For testing purposes
+#print(cube.get_colours())  # For testing purposes
+#print(cube.get_positions())  # For testing purposes
 all_colours = cube.get_colours()  # Assigns colour string to a variable
 cube.convert_colours_to_positions(all_colours)  # Creates the position string from the colours
 position_string = cube.get_positions()  # Assigns string of positions to a variable
 solution = cube.solve_cube(position_string)  # Gets the solution using the class methods
-print(solution)  # Displays solution
+print(solution)  # Displays solution'''

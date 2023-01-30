@@ -5,17 +5,13 @@ import PIL.Image, PIL.ImageTk
 
 # import main
 
-
 class MainWindow:
     def __init__(self, root):
-        self.next_button = tk.Button(root, text='Next', font=30, command=self.show_webcam)
+        self.next_button = tk.Button(root, text='Next', font=30)
         self.next_button.pack()
 
         self.back_button = tk.Button(root, text='Back', font=30)
         self.back_button.pack()
-
-        self.close_button = tk.Button(root, text='Close', font=30, command=root.destroy)
-        self.close_button.pack()
 
         self.reset_button = tk.Button(root, text='Reset', font=30)
         self.reset_button.pack()
@@ -43,30 +39,23 @@ class MainWindow:
         self.webcam_frame = tk.Label(root)
         self.webcam_frame.pack()
 
-    def show_webcam(self):
-        vid = cv.VideoCapture(0)
+
+def show_frame(self, vid):
+    while True:
         ret, frame = vid.read()
-        # rgb_frame =  cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-        captured_frame = PIL.Image.fromarray(frame)
-        photo_image = PIL.ImageTk.PhotoImage(image=captured_frame)
-        self.webcam_frame.photo = photo_image
-        self.webcam_frame.configure(image=photo_image)
-        self.webcam_frame.after(20, self.show_webcam)
-
-
-class InstructionsWindow:
-    def __init__(self):
-        self.window = tk.Tk()
-        self.instructions = tk.Label(self.window, text='Instructions')
-        self.instructions.pack()
-
-        self.close_button = tk.Button(self.window, text='Close', command=self.window.destroy)
-        self.close_button.pack()
+        frame = cv.flip(frame, 1)
+        cv2image = cv.cvtColor(frame, cv.COLOR_BGR2RGBA)
+        img = PIL.Image.fromarray(cv2image)
+        imgtk = PIL.ImageTk.PhotoImage(image=img)
+        self.webcam_frame.imgtk = imgtk
+        self.webcam_frame.configure(image=imgtk)
+        self.webcam_frame.update()
 
 
 root = tk.Tk()  # Creates a window
 root.geometry('1500x1000')  # Sets the dimensions of the window
 root.title("Rubik's cube solver")  # Gives the window a title
-gui = MainWindow(root)
-# gui.show_webcam()
+window = MainWindow(root)
+vid = cv.VideoCapture(0)
+show_frame(window, vid)
 root.mainloop()
