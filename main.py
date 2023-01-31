@@ -1,9 +1,8 @@
 import cv2 as cv
-# import numpy as np
 import math
 import keyboard
-import kociemba
 import gui
+import kociemba
 
 
 class Cube:  # Class for the representation of the cube
@@ -81,9 +80,9 @@ def detect_square(dilated_frame):  # Takes in dilated frame as parameter
             if 0.9 < aspect_ratio < 1.1:  # Checks if aspect ratio is close enough to 1 to be classified as a square
                 cv.rectangle(frame, (x, y), (x + w, y + h), (36, 255, 12), 2)  # Draws the square onto the image
                 coordinates.append((x, y, w, h))  # Adds each (x,y,w,h) tuple to coordinates array
-    #cv.imshow('img', frame)  # Shows the frame with the squares drawn on
-    gui.show_frame(gui.window,frame)
-    cv.waitKey(1)  # Keeps the frame open
+    # cv.imshow('img', frame)  # Shows the frame with the squares drawn on
+    # cv.waitKey(1)  # Keeps the frame open
+    window.show_frame(frame)
     return coordinates
 
 
@@ -119,7 +118,7 @@ def sort_coordinates(coordinates):  # Function for arranging coordinates from le
     return sorted_coordinates
 
 
-def detect_colours():
+def detect_colours(frame):
     found_all_squares = False  # Variable for checking if colour detection is correct
     face_colours = ''  # String of colours in one face
     face = morphological_operations(frame)  # Applies morphological operations to frame
@@ -145,7 +144,7 @@ def detect_colours():
             face_colours)  # Returns a tuple with the success of the colour detection and the string of nine colours
 
 
-cube = Cube()  # Creates an instance of the cube class
+'''cube = Cube()  # Creates an instance of the cube class
 vid = cv.VideoCapture(0)  # Captures video through webcam
 while cube.get_number_of_colours() != 54:  # Loop continues until all of the colours are detected
     ret, frame = vid.read()  # Gets frame from webcam feed
@@ -159,3 +158,24 @@ cube.convert_colours_to_positions(all_colours)  # Creates the position string fr
 position_string = cube.get_positions()  # Assigns string of positions to a variable
 solution = cube.solve_cube(position_string)  # Gets the solution using the class methods
 print(solution)  # Displays solution'''
+
+root = gui.tk.Tk()  # Creates a window
+root.geometry('1500x1000')  # Sets the dimensions of the window
+root.title("Rubik's cube solver")  # Gives the window a title
+window = gui.MainWindow(root)
+
+cube = Cube()
+vid = cv.VideoCapture(0)
+while cube.get_number_of_colours() != 54:  # Loop continues until all of the colours are detected
+    ret, frame = vid.read()  # Gets frame from webcam feed
+    colours_found = detect_colours(frame)  # Sets the tuple output of detect_colours to a variable
+    window.show_frame(frame)
+    if colours_found[0] == True:  # If the nine colours were found successfully
+        cube.add_face(colours_found[1])  # Add the colours to attribute in the cube class
+all_colours = cube.get_colours()  # Assigns colour string to a variable
+cube.convert_colours_to_positions(all_colours)  # Creates the position string from the colours
+position_string = cube.get_positions()  # Assigns string of positions to a variable
+solution = cube.solve_cube(position_string)  # Gets the solution using the class methods
+print(solution)  # Displays solution'''
+
+root.mainloop()

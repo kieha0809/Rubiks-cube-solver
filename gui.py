@@ -5,6 +5,9 @@ import PIL.Image, PIL.ImageTk
 
 # import main
 
+
+# import main
+
 class MainWindow:
     def __init__(self, root):
         self.next_button = tk.Button(root, text='Next', font=30)
@@ -39,11 +42,11 @@ class MainWindow:
         self.webcam_frame = tk.Label(root)
         self.webcam_frame.pack()
 
-
-def show_frame(self, vid):
-    while True:
-        ret, frame = vid.read()
-        frame = cv.flip(frame, 1)
+    def show_frame(self, webcam_frame):
+        # while True:
+        # vid = cv.VideoCapture(0)
+        # ret, frame = vid.read()
+        frame = cv.flip(webcam_frame, 1)
         cv2image = cv.cvtColor(frame, cv.COLOR_BGR2RGBA)
         img = PIL.Image.fromarray(cv2image)
         imgtk = PIL.ImageTk.PhotoImage(image=img)
@@ -51,11 +54,5 @@ def show_frame(self, vid):
         self.webcam_frame.configure(image=imgtk)
         self.webcam_frame.update()
 
-
-root = tk.Tk()  # Creates a window
-root.geometry('1500x1000')  # Sets the dimensions of the window
-root.title("Rubik's cube solver")  # Gives the window a title
-window = MainWindow(root)
-vid = cv.VideoCapture(0)
-show_frame(window, vid)
-root.mainloop()
+    def freeze_frame(self, frame):
+        self.webcam_frame.configure(image=frame)
