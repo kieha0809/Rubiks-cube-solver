@@ -137,7 +137,8 @@ def detect_colours(frame):
             face_colours += colour  # Adds colour detected to the end of the string
         print(
             f'Are these colours correct: {face_colours}? Press space if yes, press any other key if no')  # Asks the user to check if the colours detected are correct
-        cv.waitKey(0)  # Keeps the current frame open
+        window.freeze_frame()
+        # cv.waitKey(0)  # Keeps the current frame open
     if keyboard.is_pressed('space'):  # If the user presses the space bar
         found_all_squares = True  # Colour detection is correct
     return (found_all_squares,

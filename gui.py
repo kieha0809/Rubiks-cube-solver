@@ -42,17 +42,23 @@ class MainWindow:
         self.webcam_frame = tk.Label(root)
         self.webcam_frame.pack()
 
+        self.stop_updating_frame = False
+
     def show_frame(self, webcam_frame):
         # while True:
         # vid = cv.VideoCapture(0)
         # ret, frame = vid.read()
-        frame = cv.flip(webcam_frame, 1)
-        cv2image = cv.cvtColor(frame, cv.COLOR_BGR2RGBA)
-        img = PIL.Image.fromarray(cv2image)
-        imgtk = PIL.ImageTk.PhotoImage(image=img)
-        self.webcam_frame.imgtk = imgtk
-        self.webcam_frame.configure(image=imgtk)
-        self.webcam_frame.update()
+        if not self.stop_updating_frame:
+            frame = cv.flip(webcam_frame, 1)
+            cv2image = cv.cvtColor(frame, cv.COLOR_BGR2RGBA)
+            img = PIL.Image.fromarray(cv2image)
+            imgtk = PIL.ImageTk.PhotoImage(image=img)
+            self.webcam_frame.imgtk = imgtk
+            self.webcam_frame.configure(image=imgtk)
+            self.webcam_frame.update()
 
-    def freeze_frame(self, frame):
-        self.webcam_frame.configure(image=frame)
+    def freeze_frame(self):
+        self.stop_updating_frame = True
+
+    def unfreeze_fram(self):
+        self.stop_updating_frame = False
