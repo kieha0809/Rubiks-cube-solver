@@ -135,14 +135,39 @@ def detect_colours(frame):
             bgr = frame[square_midpoint_y, square_midpoint_x]  # Gets BGR value of pixel at midpoint of square
             colour = bgr_to_colour(bgr)  # Converts BGR value of pixel to a colour
             face_colours += colour  # Adds colour detected to the end of the string
-        print(
-            f'Are these colours correct: {face_colours}? Press space if yes, press any other key if no')  # Asks the user to check if the colours detected are correct
-        window.freeze_frame()
+
+        window.canvas.itemconfig(window.square1, fill=convert_initial_to_colour(face_colours[0]))
+        window.canvas.itemconfig(window.square2, fill=convert_initial_to_colour(face_colours[1]))
+        window.canvas.itemconfig(window.square3, fill=convert_initial_to_colour(face_colours[2]))
+        window.canvas.itemconfig(window.square4, fill=convert_initial_to_colour(face_colours[3]))
+        window.canvas.itemconfig(window.square5, fill=convert_initial_to_colour(face_colours[4]))
+        window.canvas.itemconfig(window.square6, fill=convert_initial_to_colour(face_colours[5]))
+        window.canvas.itemconfig(window.square7, fill=convert_initial_to_colour(face_colours[6]))
+        window.canvas.itemconfig(window.square8, fill=convert_initial_to_colour(face_colours[7]))
+        window.canvas.itemconfig(window.square9, fill=convert_initial_to_colour(face_colours[8]))
+        # print(
+        # f'Are these colours correct: {face_colours}? Press space if yes, press any other key if no')  # Asks the user to check if the colours detected are correct
+        # window.freeze_frame()
         # cv.waitKey(0)  # Keeps the current frame open
-    if keyboard.is_pressed('space'):  # If the user presses the space bar
-        found_all_squares = True  # Colour detection is correct
+    # if keyboard.is_pressed('space'):  # If the user presses the space bar
+    # found_all_squares = True  # Colour detection is correct
     return (found_all_squares,
             face_colours)  # Returns a tuple with the success of the colour detection and the string of nine colours
+
+
+def convert_initial_to_colour(initial):
+    if initial == 'b':
+        return 'blue'
+    elif initial == 'g':
+        return 'green'
+    elif initial == 'y':
+        return 'yellow'
+    elif initial == 'w':
+        return 'white'
+    elif initial == 'o':
+        return 'orange'
+    else:
+        return 'red'
 
 
 '''cube = Cube()  # Creates an instance of the cube class
