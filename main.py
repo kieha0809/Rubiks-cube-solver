@@ -1,8 +1,8 @@
-import cv2 as cv
-import math
+import cv2 as cv  # Imports opencv-python library
+import math  # Imports math library
 import keyboard
-import gui
-import kociemba
+import gui  # Imports functions from gui.py
+import kociemba  # Imports functions from Kociemba files
 
 
 class Cube:  # Class for the representation of the cube
@@ -25,7 +25,7 @@ class Cube:  # Class for the representation of the cube
     def get_positions(self):  # Method for outputting the string of positions
         return self.positions
 
-    def set_positions(self, positions):
+    def set_positions(self, positions):  # Setter method for changing the positions attribute
         self.positions = positions
 
     def convert_colours_to_positions(self, colours):  # Takes in a string of all colours and converts it to positions
@@ -82,7 +82,7 @@ def detect_square(dilated_frame):  # Takes in dilated frame as parameter
                 coordinates.append((x, y, w, h))  # Adds each (x,y,w,h) tuple to coordinates array
     # cv.imshow('img', frame)  # Shows the frame with the squares drawn on
     # cv.waitKey(1)  # Keeps the frame open
-    window.show_frame(frame)
+    window.show_frame(frame)  # Shows squares on webcam frame
     return coordinates
 
 
@@ -135,7 +135,7 @@ def detect_colours(frame):
             bgr = frame[square_midpoint_y, square_midpoint_x]  # Gets BGR value of pixel at midpoint of square
             colour = bgr_to_colour(bgr)  # Converts BGR value of pixel to a colour
             face_colours += colour  # Adds colour detected to the end of the string
-
+        # Lines below change the colours of the squares on the GUI to the colours detected on the face
         window.canvas.itemconfig(window.square1, fill=convert_initial_to_colour(face_colours[0]))
         window.canvas.itemconfig(window.square2, fill=convert_initial_to_colour(face_colours[1]))
         window.canvas.itemconfig(window.square3, fill=convert_initial_to_colour(face_colours[2]))
@@ -188,20 +188,20 @@ print(solution)  # Displays solution'''
 root = gui.tk.Tk()  # Creates a window
 root.geometry('1500x1000')  # Sets the dimensions of the window
 root.title("Rubik's cube solver")  # Gives the window a title
-window = gui.MainWindow(root)
+window = gui.MainWindow(root)  # Creates window
 
-cube = Cube()
-vid = cv.VideoCapture(0)
+cube = Cube()  # Creates instance of cube class
+vid = cv.VideoCapture(0)  # Captures video from webcam
 while cube.get_number_of_colours() != 54:  # Loop continues until all of the colours are detected
     ret, frame = vid.read()  # Gets frame from webcam feed
     colours_found = detect_colours(frame)  # Sets the tuple output of detect_colours to a variable
-    window.show_frame(frame)
+    window.show_frame(frame)  # Updates the webcam frame on the window
     if colours_found[0] == True:  # If the nine colours were found successfully
         cube.add_face(colours_found[1])  # Add the colours to attribute in the cube class
 all_colours = cube.get_colours()  # Assigns colour string to a variable
 cube.convert_colours_to_positions(all_colours)  # Creates the position string from the colours
 position_string = cube.get_positions()  # Assigns string of positions to a variable
 solution = cube.solve_cube(position_string)  # Gets the solution using the class methods
-print(solution)  # Displays solution'''
+print(solution)  # Displays solution
 
 root.mainloop()
