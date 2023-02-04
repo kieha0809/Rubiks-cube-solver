@@ -118,6 +118,21 @@ def sort_coordinates(coordinates):  # Function for arranging coordinates from le
     return sorted_coordinates
 
 
+def convert_initial_to_colour(initial):
+    if initial == 'b':
+        return 'blue'
+    elif initial == 'g':
+        return 'green'
+    elif initial == 'y':
+        return 'yellow'
+    elif initial == 'w':
+        return 'white'
+    elif initial == 'o':
+        return 'orange'
+    else:
+        return 'red'
+
+
 def detect_colours(frame):
     found_all_squares = False  # Variable for checking if colour detection is correct
     face_colours = ''  # String of colours in one face
@@ -155,21 +170,6 @@ def detect_colours(frame):
             face_colours)  # Returns a tuple with the success of the colour detection and the string of nine colours
 
 
-def convert_initial_to_colour(initial):
-    if initial == 'b':
-        return 'blue'
-    elif initial == 'g':
-        return 'green'
-    elif initial == 'y':
-        return 'yellow'
-    elif initial == 'w':
-        return 'white'
-    elif initial == 'o':
-        return 'orange'
-    else:
-        return 'red'
-
-
 '''cube = Cube()  # Creates an instance of the cube class
 vid = cv.VideoCapture(0)  # Captures video through webcam
 while cube.get_number_of_colours() != 54:  # Loop continues until all of the colours are detected
@@ -198,10 +198,10 @@ while cube.get_number_of_colours() != 54:  # Loop continues until all of the col
     window.show_frame(frame)  # Updates the webcam frame on the window
     if colours_found[0] == True:  # If the nine colours were found successfully
         cube.add_face(colours_found[1])  # Add the colours to attribute in the cube class
-all_colours = cube.get_colours()  # Assigns colour string to a variable
+'''all_colours = cube.get_colours()  # Assigns colour string to a variable
 cube.convert_colours_to_positions(all_colours)  # Creates the position string from the colours
 position_string = cube.get_positions()  # Assigns string of positions to a variable
 solution = cube.solve_cube(position_string)  # Gets the solution using the class methods
-print(solution)  # Displays solution
+print(solution)  # Displays solution'''
 
 root.mainloop()
