@@ -201,7 +201,6 @@ window = gui.MainWindow(root)  # Creates window
 
 cube = Cube()  # Creates instance of cube class
 vid = cv.VideoCapture(0)  # Captures video from webcam
-colours_correct = False
 while cube.get_number_of_colours() != 54:  # Loop continues until all the colours are detected
     ret, frame = vid.read()  # Gets frame from webcam feed
     detect_colours(frame)  # Sets the tuple output of detect_colours to a variable
@@ -209,13 +208,13 @@ while cube.get_number_of_colours() != 54:  # Loop continues until all the colour
     if window.check_if_colours_correct() == True:  # If the nine colours were found successfully
         colours_to_add = cube.get_face_colours()  # Gets the colours to be added
         cube.add_face(colours_to_add)  # Add the colours to attribute in the cube class
-        print(cube.get_all_colours())  # Prints the colours of the cube for testing
         window.reset_colours_correct()  # Sets colours_correct to False
         cube.reset_face_colours()  # Resets face_colour to an empty string
-'''all_colours = cube.get_colours()  # Assigns colour string to a variable
+
+all_colours = cube.get_all_colours()  # Assigns colour string to a variable
 cube.convert_colours_to_positions(all_colours)  # Creates the position string from the colours
 position_string = cube.get_positions()  # Assigns string of positions to a variable
 solution = cube.solve_cube(position_string)  # Gets the solution using the class methods
-print(solution)  # Displays solution'''
+window.command.set(solution)  # Displays solution'''
 
 root.mainloop()
