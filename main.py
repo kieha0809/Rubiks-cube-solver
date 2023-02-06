@@ -1,6 +1,6 @@
 import cv2 as cv  # Imports opencv-python library
 import math  # Imports math library
-import keyboard
+# import keyboard
 import gui  # Imports functions from gui.py
 import kociemba  # Imports functions from Kociemba files
 
@@ -9,17 +9,24 @@ class Cube:  # Class for the representation of the cube
     def __init__(self):
         self.colours = ''  # Creates attribute for colours
         self.positions = ''  # Creates attribute for the positions of the colours
+        self.face_colours = ''  # Attribute for colours of a single face
 
     def add_face(self, colours):  # Method for adding the colours of a face
         self.colours += colours
 
-    def remove_current_face(self):  # Method for removing the most recently added face from colours
-        self.colours = self.colours[:-6]
+    def set_face_colours(self, colours):  # Method for setting the colours of a face to face_colour
+        self.face_colours = colours
+
+    def get_face_colours(self):  # Method for getting the face colours
+        return self.face_colours
+
+    def reset_face_colours(self):  # Method for resetting face_colours attribute
+        self.face_colours = ''
 
     def get_number_of_colours(self):  # Method for returning the number of colours added to the cube
         return len(self.colours)  # Returns the length of the colours attribute string
 
-    def get_colours(self):  # Method for outputting the colours added
+    def get_all_colours(self):  # Method for outputting the colours added
         return self.colours
 
     def get_positions(self):  # Method for outputting the string of positions
@@ -150,6 +157,7 @@ def detect_colours(frame):
             bgr = frame[square_midpoint_y, square_midpoint_x]  # Gets BGR value of pixel at midpoint of square
             colour = bgr_to_colour(bgr)  # Converts BGR value of pixel to a colour
             face_colours += colour  # Adds colour detected to the end of the string
+        cube.set_face_colours(face_colours)  # Sets face_colours attribute to the colours detected
         # Lines below change the colours of the squares on the GUI to the colours detected on the face
         window.canvas.itemconfig(window.square1, fill=convert_initial_to_colour(face_colours[0]))
         window.canvas.itemconfig(window.square2, fill=convert_initial_to_colour(face_colours[1]))
@@ -166,8 +174,9 @@ def detect_colours(frame):
         # cv.waitKey(0)  # Keeps the current frame open
     # if keyboard.is_pressed('space'):  # If the user presses the space bar
     # found_all_squares = True  # Colour detection is correct
-    return (found_all_squares,
-            face_colours)  # Returns a tuple with the success of the colour detection and the string of nine colours
+    # return (found_all_squares,
+    # face_colours)  # Returns a tuple with the success of the colour detection and the string of nine colours
+    # return face_colours
 
 
 '''cube = Cube()  # Creates an instance of the cube class
@@ -192,12 +201,17 @@ window = gui.MainWindow(root)  # Creates window
 
 cube = Cube()  # Creates instance of cube class
 vid = cv.VideoCapture(0)  # Captures video from webcam
-while cube.get_number_of_colours() != 54:  # Loop continues until all of the colours are detected
+colours_correct = False
+while cube.get_number_of_colours() != 54:  # Loop continues until all the colours are detected
     ret, frame = vid.read()  # Gets frame from webcam feed
-    colours_found = detect_colours(frame)  # Sets the tuple output of detect_colours to a variable
+    detect_colours(frame)  # Sets the tuple output of detect_colours to a variable
     window.show_frame(frame)  # Updates the webcam frame on the window
-    if colours_found[0] == True:  # If the nine colours were found successfully
-        cube.add_face(colours_found[1])  # Add the colours to attribute in the cube class
+    if window.check_if_colours_correct() == True:  # If the nine colours were found successfully
+        colours_to_add = cube.get_face_colours()  # Gets the colours to be added
+        cube.add_face(colours_to_add)  # Add the colours to attribute in the cube class
+        print(cube.get_all_colours())  # Prints the colours of the cube for testing
+        window.reset_colours_correct()  # Sets colours_correct to False
+        cube.reset_face_colours()  # Resets face_colour to an empty string
 '''all_colours = cube.get_colours()  # Assigns colour string to a variable
 cube.convert_colours_to_positions(all_colours)  # Creates the position string from the colours
 position_string = cube.get_positions()  # Assigns string of positions to a variable

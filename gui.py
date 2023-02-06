@@ -5,7 +5,8 @@ import PIL.Image, PIL.ImageTk  # Imports two modules from PIL
 
 class MainWindow:  # Class for the main window
     def __init__(self, root):
-        self.next_button = tk.Button(root, text='Next', font=30)  # Creates a button to press when current scan is correct
+        self.next_button = tk.Button(root, text='Next', font=30,
+                                     command=self.set_colours_to_correct)  # Creates a button to press when current scan is correct
         self.next_button.pack()
 
         self.reset_button = tk.Button(root, text='Reset', font=30)  # Creates a button to reset the cube
@@ -36,9 +37,20 @@ class MainWindow:  # Class for the main window
         self.webcam_frame = tk.Label(root)  # Label for showing the webcam frame
         self.webcam_frame.pack()
 
+        self.colours_correct = False  # Attribute for checking if the user has confirmed the colours on screen
+
     def show_frame(self, webcam_frame):  # Method for updating the webcam frame label
         frame = cv.cvtColor(webcam_frame, cv.COLOR_BGR2RGB)  # Converts frame to RGB colour space
         img = PIL.Image.fromarray(frame)  # Converts frame from NumPy array to image
         imgtk = PIL.ImageTk.PhotoImage(image=img)  # Converts image into Tkinter PhotoImage object
         self.webcam_frame.configure(image=imgtk)  # Assigns frame to webcam frame label
         self.webcam_frame.update()  # Applies change to label
+
+    def set_colours_to_correct(self):  # Method to show that the user confirms that the colours detected are correct
+        self.colours_correct = True  # Sets colours_correct attribute to True
+
+    def reset_colours_correct(self):  # Method to rest the colours_correct attribute
+        self.colours_correct = False  # Sets colours_correct attribute to False
+
+    def check_if_colours_correct(self):  # Method to check if the user has confirmed the colours
+        return self.colours_correct  # Returns the colours_correct attribute
