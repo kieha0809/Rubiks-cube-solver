@@ -215,6 +215,6 @@ all_colours = cube.get_all_colours()  # Assigns colour string to a variable
 cube.convert_colours_to_positions(all_colours)  # Creates the position string from the colours
 position_string = cube.get_positions()  # Assigns string of positions to a variable
 solution = cube.solve_cube(position_string)  # Gets the solution using the class methods
-window.command.set(solution)  # Displays solution'''
+window.command.set(solution)  # Displays solution
 
 root.mainloop()

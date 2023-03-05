@@ -13,8 +13,11 @@ class MainWindow:  # Class for the main window
         self.reset_button.pack()
 
         self.instructions_button = tk.Button(root, text='Instructions',
-                                             font=30)  # Creates a button which will open the instructions in a new window
+                                             font=30,
+                                             command=self.open_instructions_window)  # Creates a button which will open the instructions in a new window
         self.instructions_button.pack()
+
+        self.second_window_open = False  # Attribute to see if a second window is open
 
         self.command = tk.StringVar()  # Creates a StringVar to show the user commands
         self.command_label = tk.Label(root, textvariable=self.command,
@@ -39,6 +42,8 @@ class MainWindow:  # Class for the main window
 
         self.colours_correct = False  # Attribute for checking if the user has confirmed the colours on screen
 
+        self.instructions_window = None  # Attribute for the instructions window
+
     def show_frame(self, webcam_frame):  # Method for updating the webcam frame label
         frame = cv.cvtColor(webcam_frame, cv.COLOR_BGR2RGB)  # Converts frame to RGB colour space
         img = PIL.Image.fromarray(frame)  # Converts frame from NumPy array to image
@@ -54,3 +59,35 @@ class MainWindow:  # Class for the main window
 
     def check_if_colours_correct(self):  # Method to check if the user has confirmed the colours
         return self.colours_correct  # Returns the colours_correct attribute
+
+    def is_second_window_open(self):  # Method to check if a second window is open
+        return self.second_window_open
+
+    def second_window_opened(self):  # Setter method to call when the second window is opened
+        self.second_window_open = True
+
+    def second_window_closed(self):  # Setter method to call when the second window is closed
+        self.second_window_open = False
+        self.instructions_window = None
+
+    def open_instructions_window(self):  # Method for opening the instructions window
+        if not self.is_second_window_open():  # Only opens the window if there isn't already one open
+            self.second_window_opened()  # Indicates that another window has been opened
+            window = tk.Toplevel()  # Creates new window
+            window.geometry('800x400')  # Sets dimensions of window
+            window.title('Instructions')  # Gives the window a title
+            self.instructions_window = InstructionsWindow(window)  # Creates window as attribute
+
+
+class InstructionsWindow:
+    def __init__(self, window):
+        self.instructions = tk.Label(window, text='test')  # Attribute for the instructions
+        self.instructions.pack()
+
+        self.close_button = tk.Button(window, text='Close',
+                                      command=self.close_instructions_window)  # Creates a close button
+        self.close_button.pack()
+
+    def close_instructions_window(self):  # Method for closing the window
+        window.second_window_closed()  # Indicates that the window has been closed
+        self.destroy()  # Closes the instructions window
