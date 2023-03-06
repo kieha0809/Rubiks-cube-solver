@@ -5,6 +5,7 @@ import PIL.Image, PIL.ImageTk  # Imports two modules from PIL
 
 class MainWindow:  # Class for the main window
     def __init__(self, root):
+        self.root = root
         self.next_button = tk.Button(root, text='Next', font=30,
                                      command=self.set_colours_to_correct)  # Creates a button to press when current scan is correct
         self.next_button.pack()
@@ -16,8 +17,6 @@ class MainWindow:  # Class for the main window
                                              font=30,
                                              command=self.open_instructions_window)  # Creates a button which will open the instructions in a new window
         self.instructions_button.pack()
-
-        self.second_window_open = False  # Attribute to see if a second window is open
 
         self.command = tk.StringVar()  # Creates a StringVar to show the user commands
         self.command_label = tk.Label(root, textvariable=self.command,
@@ -60,34 +59,36 @@ class MainWindow:  # Class for the main window
     def check_if_colours_correct(self):  # Method to check if the user has confirmed the colours
         return self.colours_correct  # Returns the colours_correct attribute
 
-    def is_second_window_open(self):  # Method to check if a second window is open
-        return self.second_window_open
+    def open_instructions_window(self):
+        if self.instructions_window is not None:
+            self.instructions_window.window.lift()
+        else:
+            self.instructions_window = InstructionsWindow(self.root, self.close_instructions_window)
 
-    def second_window_opened(self):  # Setter method to call when the second window is opened
-        self.second_window_open = True
-
-    def second_window_closed(self):  # Setter method to call when the second window is closed
-        self.second_window_open = False
+    def close_instructions_window(self):
         self.instructions_window = None
 
-    def open_instructions_window(self):  # Method for opening the instructions window
-        if not self.is_second_window_open():  # Only opens the window if there isn't already one open
-            self.second_window_opened()  # Indicates that another window has been opened
-            window = tk.Toplevel()  # Creates new window
-            window.geometry('800x400')  # Sets dimensions of window
-            window.title('Instructions')  # Gives the window a title
-            self.instructions_window = InstructionsWindow(window)  # Creates window as attribute
-
-
 class InstructionsWindow:
-    def __init__(self, window):
-        self.instructions = tk.Label(window, text='test')  # Attribute for the instructions
+    def __init__(self, root, close_callback):
+        self.root = root
+        self.close_callback = close_callback
+
+        self.window = tk.Toplevel(self.root)
+        self.window.title("Instructions")
+        self.window.geometry('800x400')
+
+        self.instructions = tk.Label(self.window, text='test')  # Attribute for the instructions
         self.instructions.pack()
 
-        self.close_button = tk.Button(window, text='Close',
-                                      command=self.close_instructions_window)  # Creates a close button
+        self.close_button = tk.Button(self.window, text='Close',
+                                      command=self.close_window)  # Creates a close button
         self.close_button.pack()
 
-    def close_instructions_window(self):  # Method for closing the window
-        window.second_window_closed()  # Indicates that the window has been closed
-        self.destroy()  # Closes the instructions window
+        self.window.protocol("WM_DELETE_WINDOW",self.close_window)
+
+    def close_window(self):
+        self.window.destroy()
+        if self.close_callback is not None:
+            self.close_callback()
+
+
