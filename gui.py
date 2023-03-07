@@ -59,23 +59,25 @@ class MainWindow:  # Class for the main window
     def check_if_colours_correct(self):  # Method to check if the user has confirmed the colours
         return self.colours_correct  # Returns the colours_correct attribute
 
-    def open_instructions_window(self):
-        if self.instructions_window is not None:
-            self.instructions_window.window.lift()
-        else:
+    def open_instructions_window(self):  # Method for opening the instructions window
+        if self.instructions_window is not None:  # Checks if there is already one open
+            self.instructions_window.window.lift()  # If there is then lift the current instructions window
+        else:  # If there is no instructions window
+            # Create new window with a callback
             self.instructions_window = InstructionsWindow(self.root, self.close_instructions_window)
 
-    def close_instructions_window(self):
-        self.instructions_window = None
+    def close_instructions_window(self):  # Close callback function
+        self.instructions_window = None  # Resets attribute which stores instruction window
 
-class InstructionsWindow:
-    def __init__(self, root, close_callback):
+
+class InstructionsWindow:  # Class for the instructions window
+    def __init__(self, root, close_callback):  # Takes root window and callback function as parameters
         self.root = root
         self.close_callback = close_callback
 
-        self.window = tk.Toplevel(self.root)
-        self.window.title("Instructions")
-        self.window.geometry('800x400')
+        self.window = tk.Toplevel(self.root)  # Creates new window
+        self.window.title("Instructions")  # Gives the window a title
+        self.window.geometry('800x400')  # Sets the dimensions of the window
 
         self.instructions = tk.Label(self.window, text='test')  # Attribute for the instructions
         self.instructions.pack()
@@ -84,11 +86,9 @@ class InstructionsWindow:
                                       command=self.close_window)  # Creates a close button
         self.close_button.pack()
 
-        self.window.protocol("WM_DELETE_WINDOW",self.close_window)
+        # Binds the callback function to the closing of the window
+        self.window.protocol("WM_DELETE_WINDOW", self.close_window)
 
-    def close_window(self):
-        self.window.destroy()
-        if self.close_callback is not None:
-            self.close_callback()
-
-
+    def close_window(self):  # Method called when the 'Close' button is pressed
+        self.window.destroy()  # Destroys the window
+        self.close_callback()  # Calls the callback function
