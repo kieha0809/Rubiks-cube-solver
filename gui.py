@@ -77,7 +77,7 @@ class InstructionsWindow:  # Class for the instructions window
 
         self.window = tk.Toplevel(self.root)  # Creates new window
         self.window.title("Instructions")  # Gives the window a title
-        self.window.geometry('800x400')  # Sets the dimensions of the window
+        self.window.geometry('1000x500')  # Sets the dimensions of the window
 
         scrollbar = tk.Scrollbar(self.window)  # Creates a scrollbar
         scrollbar.pack(side="right")  # Places scrollbar on the right
@@ -89,20 +89,19 @@ class InstructionsWindow:  # Class for the instructions window
         self.text = tk.Text(self.window)  # Creates text widget
         self.text.pack()
 
-        # Below lines insert instructions for scanning the cube
-        self.text.insert("end",
-                         "1. Scan the yellow face first by having the yellow side facing the camera, the white side facing you and the green side to your left.\n\n")
-        self.text.insert("end",
-                         "2. Turn the cube once towards you, then turn it once to the left. Now the green side should be facing the camera, the blue side should be facing you and the orange side is on your left.\n\n")
-        self.text.insert("end", "3. Turn the cube once to the left. Now the red side should be facing the camera.\n\n")
-        self.text.insert("end",
-                         "4. Turn the cube once towards you. Now the white side should be facing the camera.\n\n")
-        self.text.insert("end",
-                         "5. Turn the cube once away from you (i.e. to the opposite of the previous instruction). Then turn the cube once to the left. Now the green face should be facing the camera.\n\n")
-        self.text.insert("end",
-                         "6. Turn the cube once to the left. Now the orange face should be facing the camera.\n\n")
-        self.text.insert("end",
-                         "7. All the colours have been scanned. Leave the cube in its current position where the red side is facing you, the top side is yellow and the left side is blue. Execute the instructions shown from this position.\n\n")
+        # Creates a list of instructions
+        self.instructions = [
+            "1. Scan the yellow face first by having the yellow side facing the camera, the white side facing you and the green side to your left.",
+            "2. Turn the cube once towards you, then turn it once to the left. Now the green side should be facing the camera, the blue side should be facing you and the orange side is on your left.",
+            "3. Turn the cube once to the left. Now the red side should be facing the camera.",
+            "4. Turn the cube once towards you. Now the white side should be facing the camera.",
+            "5. Turn the cube once away from you (i.e. to the opposite of the previous instruction). Then turn the cube once to the left. Now the green face should be facing the camera.",
+            "6. Turn the cube once to the left. Now the orange face should be facing the camera.",
+            "7. All the colours have been scanned. Leave the cube in its current position where the red side is facing you, the top side is yellow and the left side is blue. Execute the instructions shown from this position."
+        ]
+
+        for instruction in self.instructions:  # Loops through all the instructions
+            self.text.insert("end", instruction + "\n")  # Adds each instruction to the text widget
 
         self.text.config(wrap="word", state="disabled")  # Wraps text and prevents editing
 
