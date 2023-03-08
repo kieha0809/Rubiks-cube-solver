@@ -104,6 +104,8 @@ class InstructionsWindow:  # Class for the instructions window
         self.text.insert("end",
                          "7. All the colours have been scanned. Leave the cube in its current position where the red side is facing you, the top side is yellow and the left side is blue. Execute the instructions shown from this position.\n\n")
 
+        self.text.config(wrap="word", state="disabled")  # Wraps text and prevents editing
+
         self.close_button = tk.Button(self.window, text='Close',
                                       command=self.close_window)  # Creates a close button
         self.close_button.pack()
