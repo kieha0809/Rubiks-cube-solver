@@ -201,15 +201,27 @@ window = gui.MainWindow(root)  # Creates window
 
 cube = Cube()  # Creates instance of cube class
 vid = cv.VideoCapture(0)  # Captures video from webcam
-while cube.get_number_of_colours() != 54:  # Loop continues until all the colours are detected
+count = 0  # Variable for the number of faces scanned
+
+# Create a list of commands
+commands = ["Please refer to the instructions menu before starting. Scan the yellow side",
+            "Scan the green side",
+            "Scan the red side",
+            "Scan the white side",
+            "Scan the blue side",
+            "Scan the orange side"]
+
+while count < 6:  # Loop continues until all the colours are detected
     ret, frame = vid.read()  # Gets frame from webcam feed
     detect_colours(frame)  # Sets the tuple output of detect_colours to a variable
     window.show_frame(frame)  # Updates the webcam frame on the window
-    if window.check_if_colours_correct() == True:  # If the nine colours were found successfully
+    window.command.set(commands[count])
+    if window.check_if_colours_correct():  # If the nine colours were found successfully
         colours_to_add = cube.get_face_colours()  # Gets the colours to be added
         cube.add_face(colours_to_add)  # Add the colours to attribute in the cube class
         window.reset_colours_correct()  # Sets colours_correct to False
         cube.reset_face_colours()  # Resets face_colour to an empty string
+        count += 1  # Increment count
 
 all_colours = cube.get_all_colours()  # Assigns colour string to a variable
 cube.convert_colours_to_positions(all_colours)  # Creates the position string from the colours
