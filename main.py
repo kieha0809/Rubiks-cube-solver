@@ -10,9 +10,14 @@ class Cube:  # Class for the representation of the cube
         self.colours = ''  # Creates attribute for colours
         self.positions = ''  # Creates attribute for the positions of the colours
         self.face_colours = ''  # Attribute for colours of a single face
+        self.count = 0  # Attribute for the number of faces scanned
 
     def add_face(self, colours):  # Method for adding the colours of a face
         self.colours += colours
+
+    def remove_face(self):
+        if len(self.colours) > 0:
+            self.colours = self.colours[:-1]
 
     def set_face_colours(self, colours):  # Method for setting the colours of a face to face_colour
         self.face_colours = colours
@@ -22,6 +27,14 @@ class Cube:  # Class for the representation of the cube
 
     def reset_face_colours(self):  # Method for resetting face_colours attribute
         self.face_colours = ''
+
+    def increment_count(self):
+        if self.count < 6:
+            self.count += 1
+
+    def decrement_count(self):
+        if self.count > 0:
+            self.count -= 1
 
     def get_number_of_colours(self):  # Method for returning the number of colours added to the cube
         return len(self.colours)  # Returns the length of the colours attribute string
@@ -58,6 +71,7 @@ class Cube:  # Class for the representation of the cube
     def reset_cube(self):  # Method for removing the all the colours from the 'colours' attribute
         self.colours = ''  # Resets colour attribute to empty string
         self.positions = ''  # Resets position attribute to empty string
+        self.count = 0  # Reset count to 0
 
 
 def morphological_operations(frame):
@@ -194,14 +208,14 @@ position_string = cube.get_positions()  # Assigns string of positions to a varia
 solution = cube.solve_cube(position_string)  # Gets the solution using the class methods
 print(solution)  # Displays solution'''
 
+cube = Cube()  # Creates instance of cube class
+
 root = gui.tk.Tk()  # Creates a window
 root.geometry('1500x1000')  # Sets the dimensions of the window
 root.title("Rubik's cube solver")  # Gives the window a title
-window = gui.MainWindow(root)  # Creates window
+window = gui.MainWindow(root, cube.reset_cube)  # Creates window
 
-cube = Cube()  # Creates instance of cube class
 vid = cv.VideoCapture(0)  # Captures video from webcam
-count = 0  # Variable for the number of faces scanned
 
 # Create a list of commands
 commands = ["Please refer to the instructions menu before starting. Scan the yellow side",
@@ -211,17 +225,17 @@ commands = ["Please refer to the instructions menu before starting. Scan the yel
             "Scan the blue side",
             "Scan the orange side"]
 
-while count < 6:  # Loop continues until all the colours are detected
+while cube.count < 6:  # Loop continues until all the colours are detected
     ret, frame = vid.read()  # Gets frame from webcam feed
     detect_colours(frame)  # Sets the tuple output of detect_colours to a variable
     window.show_frame(frame)  # Updates the webcam frame on the window
-    window.command.set(commands[count])
+    window.command.set(commands[cube.count])
     if window.check_if_colours_correct():  # If the nine colours were found successfully
         colours_to_add = cube.get_face_colours()  # Gets the colours to be added
         cube.add_face(colours_to_add)  # Add the colours to attribute in the cube class
         window.reset_colours_correct()  # Sets colours_correct to False
         cube.reset_face_colours()  # Resets face_colour to an empty string
-        count += 1  # Increment count
+        cube.increment_count()  # Increment count
 
 all_colours = cube.get_all_colours()  # Assigns colour string to a variable
 cube.convert_colours_to_positions(all_colours)  # Creates the position string from the colours

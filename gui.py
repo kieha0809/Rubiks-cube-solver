@@ -4,13 +4,16 @@ import PIL.Image, PIL.ImageTk  # Imports two modules from PIL
 
 
 class MainWindow:  # Class for the main window
-    def __init__(self, root):
+    def __init__(self, root, reset_callback):  # Uses callback function to detect when Reset button is pressed
         self.root = root
+        self.reset_callback = reset_callback
+
         self.next_button = tk.Button(root, text='Next', font=30,
                                      command=self.set_colours_to_correct)  # Creates a button to press when current scan is correct
         self.next_button.pack()
 
-        self.reset_button = tk.Button(root, text='Reset', font=30)  # Creates a button to reset the cube
+        self.reset_button = tk.Button(root, text='Reset', font=30,
+                                      command=self.reset_cube)  # Creates a button to reset the cube
         self.reset_button.pack()
 
         self.instructions_button = tk.Button(root, text='Instructions',
@@ -68,6 +71,9 @@ class MainWindow:  # Class for the main window
 
     def close_instructions_window(self):  # Close callback function
         self.instructions_window = None  # Resets attribute which stores instruction window
+
+    def reset_cube(self):  # Method for resetting the cube
+        self.reset_callback()  # Calls the callback function
 
 
 class InstructionsWindow:  # Class for the instructions window
