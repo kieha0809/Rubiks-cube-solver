@@ -1,6 +1,5 @@
 import cv2 as cv  # Imports opencv-python library
 import math  # Imports math library
-# import keyboard
 import gui  # Imports functions from gui.py
 import kociemba  # Imports functions from Kociemba files
 
@@ -182,31 +181,7 @@ def detect_colours(frame):
         window.canvas.itemconfig(window.square7, fill=convert_initial_to_colour(face_colours[6]))
         window.canvas.itemconfig(window.square8, fill=convert_initial_to_colour(face_colours[7]))
         window.canvas.itemconfig(window.square9, fill=convert_initial_to_colour(face_colours[8]))
-        # print(
-        # f'Are these colours correct: {face_colours}? Press space if yes, press any other key if no')  # Asks the user to check if the colours detected are correct
-        # window.freeze_frame()
-        # cv.waitKey(0)  # Keeps the current frame open
-    # if keyboard.is_pressed('space'):  # If the user presses the space bar
-    # found_all_squares = True  # Colour detection is correct
-    # return (found_all_squares,
-    # face_colours)  # Returns a tuple with the success of the colour detection and the string of nine colours
-    # return face_colours
 
-
-'''cube = Cube()  # Creates an instance of the cube class
-vid = cv.VideoCapture(0)  # Captures video through webcam
-while cube.get_number_of_colours() != 54:  # Loop continues until all of the colours are detected
-    ret, frame = vid.read()  # Gets frame from webcam feed
-    colours_found = detect_colours()  # Sets the tuple output of detect_colours to a variable
-    if colours_found[0] == True:  # If the nine colours were found successfully
-        cube.add_face(colours_found[1])  # Add the colours to attribute in the cube class
-#print(cube.get_colours())  # For testing purposes
-#print(cube.get_positions())  # For testing purposes
-all_colours = cube.get_colours()  # Assigns colour string to a variable
-cube.convert_colours_to_positions(all_colours)  # Creates the position string from the colours
-position_string = cube.get_positions()  # Assigns string of positions to a variable
-solution = cube.solve_cube(position_string)  # Gets the solution using the class methods
-print(solution)  # Displays solution'''
 
 cube = Cube()  # Creates instance of cube class
 
@@ -225,11 +200,11 @@ commands = ["Please refer to the instructions menu before starting. Scan the yel
             "Scan the blue side",
             "Scan the orange side"]
 
-while cube.count < 6:  # Loop continues until all the colours are detected
+'''while cube.count < 6:  # Loop continues until all the colours are detected
     ret, frame = vid.read()  # Gets frame from webcam feed
     detect_colours(frame)  # Sets the tuple output of detect_colours to a variable
     window.show_frame(frame)  # Updates the webcam frame on the window
-    window.command.set(commands[cube.count])
+    window.command.set(commands[cube.count]) # Updates command on window
     if window.check_if_colours_correct():  # If the nine colours were found successfully
         colours_to_add = cube.get_face_colours()  # Gets the colours to be added
         cube.add_face(colours_to_add)  # Add the colours to attribute in the cube class
@@ -237,10 +212,34 @@ while cube.count < 6:  # Loop continues until all the colours are detected
         cube.reset_face_colours()  # Resets face_colour to an empty string
         cube.increment_count()  # Increment count
 
-all_colours = cube.get_all_colours()  # Assigns colour string to a variable
-cube.convert_colours_to_positions(all_colours)  # Creates the position string from the colours
-position_string = cube.get_positions()  # Assigns string of positions to a variable
-solution = cube.solve_cube(position_string)  # Gets the solution using the class methods
-window.command.set(solution)  # Displays solution
+    if cube.count == 6:
+        all_colours = cube.get_all_colours()  # Assigns colour string to a variable
+        cube.convert_colours_to_positions(all_colours)  # Creates the position string from the colours
+        position_string = cube.get_positions()  # Assigns string of positions to a variable
+        solution = cube.solve_cube(position_string)  # Gets the solution using the class methods
+        window.command.set(solution)  # Displays solution'''
+
+while True:
+    if cube.count < 6:
+        ret, frame = vid.read()  # Gets frame from webcam feed
+        detect_colours(frame)  # Sets the tuple output of detect_colours to a variable
+        window.show_frame(frame)  # Updates the webcam frame on the window
+        window.command.set(commands[cube.count])
+        if window.check_if_colours_correct():  # If the nine colours were found successfully
+            colours_to_add = cube.get_face_colours()  # Gets the colours to be added
+            cube.add_face(colours_to_add)  # Add the colours to attribute in the cube class
+            window.reset_colours_correct()  # Sets colours_correct to False
+            cube.reset_face_colours()  # Resets face_colour to an empty string
+            cube.increment_count()  # Increment count
+    else:
+        all_colours = cube.get_all_colours()  # Assigns colour string to a variable
+        cube.convert_colours_to_positions(all_colours)  # Creates the position string from the colours
+        position_string = cube.get_positions()  # Assigns string of positions to a variable
+        solution = cube.solve_cube(position_string)  # Gets the solution using the class methods
+        window.command.set(solution)  # Displays solution
+        while cube.count == 6:
+            window.update_idletasks()
+
+
 
 root.mainloop()
