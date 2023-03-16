@@ -99,11 +99,11 @@ class InstructionsWindow:  # Class for the instructions window
         self.instructions = [
             "1. Scan the yellow face first by having the yellow side facing the camera, the white side facing you and the green side to your left.",
             "2. Turn the cube once towards you, then turn it once to the left. Now the green side should be facing the camera, the blue side should be facing you and the orange side is on your left.",
-            "3. Turn the cube once to the left. Now the red side should be facing the camera.",
+            "3. Turn the cube once to the right. Now the red side should be facing the camera.",
             "4. Turn the cube once towards you. Now the white side should be facing the camera.",
-            "5. Turn the cube once away from you (i.e. to the opposite of the previous instruction). Then turn the cube once to the left. Now the green face should be facing the camera.",
-            "6. Turn the cube once to the left. Now the orange face should be facing the camera.",
-            "7. All the colours have been scanned. Leave the cube in its current position where the red side is facing you, the top side is yellow and the left side is blue. Execute the instructions shown from this position."
+            "5. Turn the cube once away from you (i.e. to the opposite of the previous instruction). Then turn the cube once to the right. Now the blue face should be facing the camera.",
+            "6. Turn the cube once to the right. Now the orange face should be facing the camera.",
+            "7. All the colours have now been scanned. Leave the cube in its current position where the red side is facing you, the top side is yellow and the left side is blue. Execute the instructions shown from this position."
         ]
 
         for instruction in self.instructions:  # Loops through all the instructions

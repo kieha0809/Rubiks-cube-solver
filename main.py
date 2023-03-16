@@ -219,17 +219,18 @@ commands = ["Please refer to the instructions menu before starting. Scan the yel
         solution = cube.solve_cube(position_string)  # Gets the solution using the class methods
         window.command.set(solution)  # Displays solution'''
 
-while cube.count <= 6:  # Loop continues until all the colours are detected
+while True:  # Loop continues until all the colours are detected
     ret, frame = vid.read()  # Gets frame from webcam feed
-    detect_colours(frame)  # Sets the tuple output of detect_colours to a variable
-    window.show_frame(frame)  # Updates the webcam frame on the window
-    window.command.set(commands[cube.count])
-    if window.check_if_colours_correct():  # If the nine colours were found successfully
-        colours_to_add = cube.get_face_colours()  # Gets the colours to be added
-        cube.add_face(colours_to_add)  # Add the colours to attribute in the cube class
-        window.reset_colours_correct()  # Sets colours_correct to False
-        cube.reset_face_colours()  # Resets face_colour to an empty string
-        cube.increment_count()  # Increment count
+    window.command.set(commands[cube.count])  # Updates command on window
+    if cube.count < 6:
+        detect_colours(frame)  # Sets the tuple output of detect_colours to a variable
+        window.show_frame(frame)  # Updates the webcam frame on the window
+        if window.check_if_colours_correct():  # If the nine colours were found successfully
+            colours_to_add = cube.get_face_colours()  # Gets the colours to be added
+            cube.add_face(colours_to_add)  # Add the colours to attribute in the cube class
+            window.reset_colours_correct()  # Sets colours_correct to False
+            cube.reset_face_colours()  # Resets face_colour to an empty string
+            cube.increment_count()  # Increment count
 
     if cube.count == 6:
         all_colours = cube.get_all_colours()  # Assigns colour string to a variable
@@ -237,8 +238,5 @@ while cube.count <= 6:  # Loop continues until all the colours are detected
         position_string = cube.get_positions()  # Assigns string of positions to a variable
         solution = cube.solve_cube(position_string)  # Gets the solution using the class methods
         commands.append(solution)
-        #window.command.set(solution)  # Displays solution
-
-
 
 root.mainloop()
