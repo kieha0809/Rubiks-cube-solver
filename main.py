@@ -11,6 +11,14 @@ class Cube:  # Class for the representation of the cube
         self.face_colours = ''  # Attribute for colours of a single face
         self.count = 0  # Attribute for the number of faces scanned
 
+        # Create a list of commands
+        self.commands = ["Please refer to the instructions menu before starting. Scan the yellow side",
+                         "Scan the green side",
+                         "Scan the red side",
+                         "Scan the white side",
+                         "Scan the blue side",
+                         "Scan the orange side"]
+
     def add_face(self, colours):  # Method for adding the colours of a face
         self.colours += colours
 
@@ -67,10 +75,15 @@ class Cube:  # Class for the representation of the cube
     def solve_cube(self, cube_string):  # Takes in the string of positions as a parameter
         return kociemba.solve(str(cube_string))  # Uses the position attribute as argument in Kociemba function
 
+    def add_solution(self, solution):  # Adds solution to end of commands list
+        self.commands.append(solution)
+
     def reset_cube(self):  # Method for removing the all the colours from the 'colours' attribute
         self.colours = ''  # Resets colour attribute to empty string
         self.positions = ''  # Resets position attribute to empty string
         self.count = 0  # Reset count to 0
+        if len(self.commands) > 6:  # If the solution has been added to commands
+            self.commands = self.commands[:-1]  # Remove the previous solution
 
 
 def morphological_operations(frame):
@@ -193,18 +206,19 @@ window = gui.MainWindow(root, cube.reset_cube)  # Creates window
 vid = cv.VideoCapture(0)  # Captures video from webcam
 
 # Create a list of commands
-commands = ["Please refer to the instructions menu before starting. Scan the yellow side",
+'''commands = ["Please refer to the instructions menu before starting. Scan the yellow side",
             "Scan the green side",
             "Scan the red side",
             "Scan the white side",
             "Scan the blue side",
-            "Scan the orange side"]
+            "Scan the orange side"]'''
 
 '''while cube.count < 6:  # Loop continues until all the colours are detected
     ret, frame = vid.read()  # Gets frame from webcam feed
     detect_colours(frame)  # Sets the tuple output of detect_colours to a variable
     window.show_frame(frame)  # Updates the webcam frame on the window
-    window.command.set(commands[cube.count]) # Updates command on window
+    command_to_show = cube.commands[cube.count]
+    window.command.set(cube.commands[cube.count]) # Updates command on window
     if window.check_if_colours_correct():  # If the nine colours were found successfully
         colours_to_add = cube.get_face_colours()  # Gets the colours to be added
         cube.add_face(colours_to_add)  # Add the colours to attribute in the cube class
@@ -221,22 +235,22 @@ commands = ["Please refer to the instructions menu before starting. Scan the yel
 
 while True:  # Loop continues until all the colours are detected
     ret, frame = vid.read()  # Gets frame from webcam feed
-    window.command.set(commands[cube.count])  # Updates command on window
-    if cube.count < 6:
-        detect_colours(frame)  # Sets the tuple output of detect_colours to a variable
-        window.show_frame(frame)  # Updates the webcam frame on the window
-        if window.check_if_colours_correct():  # If the nine colours were found successfully
-            colours_to_add = cube.get_face_colours()  # Gets the colours to be added
-            cube.add_face(colours_to_add)  # Add the colours to attribute in the cube class
-            window.reset_colours_correct()  # Sets colours_correct to False
-            cube.reset_face_colours()  # Resets face_colour to an empty string
-            cube.increment_count()  # Increment count
+    command_to_show = cube.commands[cube.count]  # Gets command to show from commands attribute
+    window.command.set(command_to_show)  # Updates command on window
+    detect_colours(frame)  # Sets the tuple output of detect_colours to a variable
+    window.show_frame(frame)  # Updates the webcam frame on the window
+    if cube.count < 6 and window.check_if_colours_correct():  # If the nine colours were found successfully
+        colours_to_add = cube.get_face_colours()  # Gets the colours to be added
+        cube.add_face(colours_to_add)  # Add the colours to attribute in the cube class
+        window.reset_colours_correct()  # Sets colours_correct to False
+        cube.reset_face_colours()  # Resets face_colour to an empty string
+        cube.increment_count()  # Increment count
 
-    if cube.count == 6:
+    if cube.count == 6 and len(cube.commands) < 7:  # Runs if count = 6 and there are fewer than 7 commands
         all_colours = cube.get_all_colours()  # Assigns colour string to a variable
         cube.convert_colours_to_positions(all_colours)  # Creates the position string from the colours
         position_string = cube.get_positions()  # Assigns string of positions to a variable
         solution = cube.solve_cube(position_string)  # Gets the solution using the class methods
-        commands.append(solution)
+        cube.add_solution(solution)  # Adds solution to commands
 
 root.mainloop()
